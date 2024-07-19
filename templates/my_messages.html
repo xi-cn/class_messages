@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的消息</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/my_messages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/css/all.min.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hi!{{username}},这里是你发布的消息哦</h1>
+            {% if message %}
+            <p style="color: rgb(211, 10, 242);">{{ message }}</p>
+            {% endif %} 
+            <div class="actions">
+                <a href="{{ url_for('return_userinfo2',username=username) }}" class="btn">返回主页</a> <!-- 返回主页的链接 -->
+
+            </div>
+        </div>
+        <div class="content">
+            <ul class="my-messages-list">
+                {% for message in my_messages %}
+                <li class="my-message-item">
+                    <div class="my-message-header">
+                        <strong>{{ message.title }}</strong> - {{ message.date }}
+                        <a href="{{ url_for('delete_my_message', username=username,message_id=message.id) }}" class="delete-btn">删除</a>
+                    </div>
+                    <div class="my-message-body">
+                        <p>{{ message.content }}</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

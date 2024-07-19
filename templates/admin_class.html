@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级管理</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_class.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <h1>{{ class_data.class_name }} 班级管理</h1>
+            {% if message %}
+            <p style="color: rgb(22, 242, 10);">{{ message }}</p>
+            {% endif %} 
+        <div class="content">
+            <h2>班级信息</h2>
+            <p><strong>班级人数：</strong>{{ class_data.num_students }}</p>
+            <p><strong>班级管理员：</strong>{{ class_data.admin }}</p>
+        </div>
+
+        <div class="content">
+            <h2>班级成员</h2>
+            <ul class="member-list">
+                {% for member in class_data.students %}
+                <li class="member-item">
+                    <strong>{{ member.name }}</strong> - {{ member.contact }}
+                    <a href="{{ url_for('remove_member', username=username,class_id=class_data.class_id, member_name=member.name) }}" class="btn remove-btn">移除</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="actions">
+            <a href="{{url_for('to_handle_apply',class_id=class_data.class_id,username=username)}}" class="btn">处理班级申请</a>
+        </div>
+        
+
+
+        <div class="actions">
+            <a href="{{ url_for('to_class_info',username=username) }}"  class="btn">返回个人班级</a>
+        </div>
+    </div>
+</body>
+</html>

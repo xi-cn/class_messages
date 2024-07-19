@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url(./bg2.png);
+    background-color: #f4f4f4;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.container {
+    margin-top: auto;
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 17px #333;
+    border-radius: 25px;
+    overflow-y: auto;
+    max-height: 100vh;
+    text-align: center;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    color: #f5f5f5;
+}
+
+.content {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+    box-shadow: 0 0 17px #404040;
+    color: #fff;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+    text-align: left;
+}
+
+.my-messages-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.my-message-item {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 5px #aaa;
+}
+
+.my-message-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between; /* Align delete button to the right */
+    align-items: center; /* Center vertically */
+}
+
+.my-message-body {
+    font-size: 1.2em;
+    color: #1e90ff; /* Blue color for info body */
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    display: inline-block;
+    margin: 0 10px;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #6a0dad; /* Purple button color */
+    border-radius: 5px;
+    box-shadow: 0 0 17px #404040;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn:hover {
+    background-color: #9932cc; /* Darker shade of purple for hover */
+}
+
+.delete-btn {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 8px 16px;
+    color: #fff;
+    background-color: #ff6347; /* Red color for delete button */
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #dc143c; /* Darker red shade for hover */
+}

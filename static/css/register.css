@@ -1,0 +1,128 @@
+body {
+    font-family: sans-serif;
+    background-image: url(./bg2.png);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    background-size: cover;
+    position: relative;
+    width: 100%;
+    max-width: 1000px; /* 缩小最大宽度 */
+    margin: 0 auto;
+    padding: 10px; /* 减少页面内边距 */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    width: 80%;
+    max-width: 280px; /* 缩小最大宽度 */
+    margin-top: 30px; /* 减少顶部距离 */
+    border-radius: 20px; /* 缩小圆角半径 */
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px #333; /* 缩小阴影 */
+    padding: 15px; /* 减少内边距 */
+    box-sizing: border-box;
+}
+
+.content {
+    color: #fff;
+    padding: 15px; /* 减少内边距 */
+    font-size: 0.9em; /* 缩小字体大小 */
+    line-height: 1.4; /* 缩小行高 */
+    width: 80%;
+    max-width: 300px; /* 缩小最大宽度 */
+    margin-top: 20px;
+    border-radius: 20px; /* 缩小圆角半径 */
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px #404040; /* 缩小阴影 */
+    box-sizing: border-box;
+}
+
+.header {
+    text-align: center;
+    padding-top: 10px; /* 减少内边距 */
+}
+
+.header h1 {
+    color: #333;
+    font-size: 30px; /* 缩小字体大小 */
+    margin-bottom: 10px; /* 缩小底部间距 */
+}
+
+.header h2 {
+    color: #333;
+    font-size: 30px; /* 缩小字体大小 */
+    margin-bottom: 40px; /* 缩小底部间距 */
+}
+
+.main {
+    text-align: center;
+}
+
+.main input, button {
+    width: 90%;
+    max-width: 240px; /* 缩小最大宽度 */
+    height: 30px; /* 缩小高度 */
+    border: none;
+    outline: none;
+    padding-left: 30px; /* 缩小内边距 */
+    box-sizing: border-box;
+    font-size: 16px; /* 缩小字体大小 */
+    margin-bottom: 20px; /* 缩小底部间距 */
+}
+
+.main button {
+    padding-left: 0;
+    background-color: #83acf1;
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 50px; /* 缩小底部间距 */
+    cursor: pointer;
+}
+
+.main button:hover {
+    box-shadow: 1px 1px 3px #555; /* 缩小阴影 */
+    background-color: #7799d4;
+}
+
+.main input:hover {
+    box-shadow: 1px 1px 3px #555; /* 缩小阴影 */
+    background-color: #ddd;
+}
+
+.main span {
+    position: relative;
+}
+
+.main i {
+    position: absolute;
+    left: 10px; /* 调整图标位置 */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
+    font-size: 14px; /* 缩小图标大小 */
+}
+
+.main p {
+    color: #0c0000;
+    font-size: 14px; /* 缩小字体大小 */
+    margin-top: -20px; /* 调整与上方元素的距离 */
+}
+
+.main p a {
+    color: purple;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container, .content {
+        width: 100%;
+        max-width: none;
+    }
+
+    .main input, .main button {
+        width: 100%;
+    }
+}

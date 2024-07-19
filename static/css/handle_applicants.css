@@ -1,0 +1,113 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url(./bg2.png);
+    background-color: #f4f4f4;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative; /* Ensure absolute positioning relative to body */
+    overflow-x: hidden; /* Ensure horizontal overflow is hidden */
+}
+
+.container {
+    margin-top: auto;
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 17px #333;
+    border-radius: 25px;
+    overflow-y: auto; /* Allow vertical scrolling */
+    max-height: 100vh; /* Limit height to viewport height */
+    text-align: center; /* Center align the content in container */
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #f5f5f5;
+}
+
+.section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+    box-shadow: 0 0 17px #404040;
+    color: #fff;
+    overflow-y: auto; /* Allow vertical scrolling */
+    max-height: calc(100vh - 200px); /* Adjust as necessary */
+    text-align: center; /* Center align the content in section */
+}
+
+.section h2 {
+    font-size: 1.8em;
+    color: #f5f5f5;
+}
+
+.section p {
+    font-size: 1.2em;
+}
+
+.member-list, .applicant-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.member-item, .applicant-item {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 5px #aaa;
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Center align buttons */
+}
+
+.actions .btn, .btn {
+    display: inline-block; /* Change to inline-block for buttons */
+    margin: 0 10px; /* Add margin between buttons */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #6a0dad; /* Change button color to purple */
+    border-radius: 5px;
+    box-shadow: 0 0 17px #404040;
+    transition: background-color 0.3s ease;
+    cursor: pointer; /* Add cursor pointer for buttons */
+    border: none; /* Remove border for buttons */
+}
+
+.actions .btn:hover, .btn:hover {
+    background-color: #9932cc; /* Darker shade of purple for hover */
+}
+
+a {
+    color: #6a0dad; /* Change link color to purple */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.section a {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: rgba(231, 7, 243, 0.936);
+    border-radius: 5px;
+    text-decoration: none;
+    box-shadow: 0 0 5px #333;
+}
+
+.section a:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/class_invitation.css') }}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Hi! {{username}} 收到的班级邀请如下</h2>
+        </div>
+        <div class="content">
+            <ul>
+                {% for invitation in invite_info %}
+                <form action="/response_invitation" method="POST">
+                    <input type="hidden" name="invite_id" value="{{ invitation.invite_id }}">
+                    <li>
+                        <div class="class_name">{{ invitation.class_name }}</div>
+                        <div class="inviter_name">{{ invitation.inviter }}</div>
+                        <div class="invite_descp">{{ invitation.invite_time }}</div>
+                        <div class="response">
+                            <input type="hidden" name="response" class="response_input" value="">
+                            <button type="button" class = "response_btn" onclick="submitForm('refuse', {{ invitation.index }})">
+                                <img src="../static/svg/refuse.svg" alt="SVG Image" height="28">
+                            </button>
+                            <button type="button" class = "response_btn" onclick="submitForm('agree', {{ invitation.index }})">
+                                <img src="../static/svg/agree.svg" alt="SVG Image" height="28">
+                            </button>
+                        </div>
+                    </li>
+                </form>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="actions">
+            <a href="{{ url_for('to_class_info',username=username) }}" class="btn">返回班级</a>
+            <a href="{{ url_for('to_class_info',username=username) }}" class="btn">全部拒绝</a>
+        </div>
+    </div>
+
+    <script>
+        function submitForm(response, index) {  
+            // 设置隐藏的response字段的值  
+            var response_input = document.getElementsByClassName("response_input")
+            response_input[index].value = response
+
+            // 提交表单  
+            var forms = document.querySelectorAll('form[action="/response_invitation"]');
+            forms[index].submit();  
+        }  
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+body {
+    font-family: sans-serif;
+    background-image: url(./bg2.png);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    background-size: cover;
+    position: relative; /* 确保子元素的绝对定位是相对于body */
+}
+
+.container {
+    width: 380px;
+    position: absolute;
+    margin-top: 50px; /* 使用margin-top增加顶部距离 */
+    right: 10%; 
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.1);
+    /* 阴影部分 */
+    box-shadow: 0 0 17px #333;
+}
+
+.content {
+    color: #fff;
+    padding: 20px;
+    font-size: 1.1em;
+    line-height: 1.6;
+    width: 400px;
+    position: absolute;
+    margin-top: 300px; /* 使用margin-top增加顶部距离 */
+    left: 10%; /* 将容器移动到右侧 */
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.1);
+    /* 阴影部分 */
+    box-shadow: 0 0 17px #404040;
+}
+
+
+
+
+.header {
+    text-align: center;
+    padding-top: 20px; /* 确保 h1 元素位于容器顶部 */
+}
+
+.header h1 {
+    color: #333;
+    font-size: 45px;
+    margin-bottom: 20px; /* 确保与顶部距离合适 */
+}
+
+.header h2 {
+    color: #333;
+    font-size: 45px;
+    margin-bottom: 80px;
+}
+
+.main {
+    text-align: center;
+}
+
+.main input, button {
+    width: 300px;
+    height: 40px;
+    border: none;
+    outline: none;
+    padding-left: 40px;
+    box-sizing: border-box;
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.main button {
+    padding-left: 0;
+    background-color: #83acf1;
+    letter-spacing: 1px;
+    font-weight: bold;
+    margin-bottom: 70px;
+}
+
+.main button:hover {
+    box-shadow: 2px 2px 5px #555;
+    background-color: #7799d4;
+}
+
+.main input:hover {
+    box-shadow: 2px 2px 5px #555;
+    background-color: #ddd;
+}
+
+.main span {
+    position: relative;
+}
+
+.main i {
+    position: absolute;
+    left: 15px;
+    top: 2px;
+    color: #333;
+    font-size: 16px;
+}
+
+.main p{
+    color:#0c0000;
+    font-size: 18px;
+    margin-top: 0%; /* 调整距离登录按钮的上方距离 */
+}
+
+
+.main p a {
+    color: purple;
+}

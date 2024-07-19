@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册页面</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/css/all.min.css')}}">
+</head>
+<body>
+    
+    <div class="container">
+        <div class="header">
+            <h1>注册</h1>
+            {% if error %}
+            <p style="color: rgb(0, 217, 255);">{{ error }}</p>
+            {% endif %}
+        </div>
+        <div class="main">
+            <form action="/register" method="POST">
+                <span>
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="用 户 名" required>
+                </span><br>
+                <span>
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="邮 箱" required>
+                </span><br>
+                <span>
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" name="phone" placeholder="电 话 号 码" required>
+                </span><br>
+                <span>
+                    <i class="fas fa-calendar-alt"></i>
+                    <input type="number" name="age" placeholder="年 龄" min="0" required>
+                </span><br>
+                <span>
+                    <i class="fas fa-briefcase"></i>
+                    <input type="text" name="job" placeholder="工 作" required>
+                </span><br>
+                <span>
+                    <i class="fas fa-calendar-alt"></i>
+                    <input type="number" name="year" placeholder="入学年份" min="1900" max="2099" step="1" required>
+                </span><br>
+                <span>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="密 码" required>
+                </span><br>
+                <span>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="confirm_password" placeholder="确 认 密 码" required>
+                </span><br>
+                <button type="submit">注 册</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

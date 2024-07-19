@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改用户信息</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/change_info.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/css/all.min.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>修改用户信息</h1>
+            <h2>Hi!{{user[0]}}</h2>
+            {% if message %}
+            <p style="color: rgb(10, 242, 37);">{{ message }}</p>
+            {% endif %} 
+        </div>
+        <div class="content">
+            <form action="/change_info" method="POST">
+                <span>
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="用 户 名" value="{{ user[0] }}" required>
+                </span>
+                <span>
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="邮 箱" value="{{ user[1] }}" required>
+                </span>
+                <span>
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" name="phone" placeholder="电 话 号 码" value="{{ user[2] }}" required>
+                </span>
+                <span>
+                    <i class="fas fa-calendar"></i>
+                    <input type="number" name="age" placeholder="年 龄" value="{{ user[3] }}" min="0" required>
+                </span>
+                <span>
+                    <i class="fas fa-briefcase"></i>
+                    <input type="text" name="job" placeholder="工 作" value="{{ user[4] }}" required>
+                </span>
+                <span>
+                    <i class="fas fa-graduation-cap"></i>
+                    <input type="number" name="year" placeholder="入学年份" value="{{ user[5] }}" min="1900" max="2099" step="1" required>
+                </span>
+                <button type="submit">保存修改</button>
+            </form>
+        </div>
+        <div class="actions">
+            <a href="{{ url_for('to_change_password', user=user) }}" class="btn">修改密码</a>
+            <a href="{{ url_for('return_userinfo',user=user[0]) }}" class="btn">返回用户信息页面</a>
+        </div>
+    </div>
+</body>
+</html>

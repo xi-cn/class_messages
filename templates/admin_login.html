@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=d, initial-scale=1.0">
+    <title>管 理 员 登 录 页 面</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_style.css') }}">
+    <!-- 获取图标 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/css/all.min.css')}}">
+
+</head>
+<body>
+    
+    
+    
+    <div class="container">
+        <div class="header">
+            <h1>网 上 校 友 通 讯</h1>
+            <h2>管 理 员 登 录</h2>             
+            {% if message %}
+            <p style="color: rgb(231, 10, 242);">{{ message }}</p>
+            {% endif %}           
+        </div>
+        <div class="main">
+            <form action="/admin_login" method="POST">
+                <span>
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="用 户 名">
+                </span><br>
+                <span>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name='password' placeholder="密 码">
+                </span><br>
+                <button type="submit">登录</button>
+            </form>
+
+        </div>
+    </div>
+    <div class ='content'>
+        <ul>
+            <li>您 可 以 查 看 所 有 人 的 信 息 吧！</li>
+        </ul>
+    </div>
+</body>
+</html>

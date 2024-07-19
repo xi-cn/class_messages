@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户搜索</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/search_class.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hi!{{ username }},在这里可以搜索你的好友哦</h1>
+            {% if message %}
+            <p style="color: rgb(185, 11, 248);">{{ message }}</p>
+            {% endif %} 
+            <div class="actions">
+                <a href="{{ url_for('to_class_info',username=username) }}" class="btn">返回班级</a>
+            </div>
+        </div>
+        <div class="search-form">
+            <form action="{{ url_for('search_class', username=username) }}" method="GET">
+                <input type="text" name="query" placeholder="输入搜索关键词...">
+                <select name="category">
+                    <option value="class_name">班级名称</option>
+                    <option value="class_id">班级id</option>
+                </select>
+                <button type="submit" class="btn-search">搜索</button>
+            </form>
+        </div>
+        <div class="search-results">
+            {% if result %}
+            <h2>搜索结果</h2>
+            <ul class="class-list">
+                {% if result.success %}
+                {% for class_ in result.class_info %}
+                <form action="/apply_class" method="post">
+                    <input type="hidden" name="c_id" value="{{ class_.c_id }}">
+                    <li class="class-item">
+                        <strong>{{ class_.c_id }}</strong> - {{ class_.c_name }}
+                        <button type="submit" class="btn-apply">申请</button>
+                    </li>
+                </form>
+                {% endfor %}
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

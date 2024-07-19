@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户搜索</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/search_user.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hi!{{ username }},在这里可以搜索你的好友哦</h1>
+            {% if message %}
+            <p style="color: rgb(185, 11, 248);">{{ message }}</p>
+            {% endif %} 
+            <div class="actions">
+                <a href="{{ url_for('return_userinfo2', username=username) }}" class="btn">返回主页</a>
+            </div>
+        </div>
+        <div class="search-form">
+            <form action="{{ url_for('search_user', username=username) }}" method="GET">
+                <input type="text" name="query" placeholder="输入搜索关键词...">
+                <select name="category">
+                    <option value="class">班级</option>
+                    <option value="name">姓名</option>
+                    <option value="admission_year">入学时间</option>
+                </select>
+                <button type="submit" class="btn-search">搜索</button>
+            </form>
+        </div>
+        <div class="search-results">
+            <h2>搜索结果</h2>
+            <ul class="user-list">
+                {% for user in search_results %}
+                <li class="user-item">
+                    <strong>{{ user.name }}</strong> - {{ user.contact }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
