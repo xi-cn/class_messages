@@ -1,6 +1,5 @@
 import pymysql
 import datetime
-import datetime
 
 #连接数据库
 conn = pymysql.connect(
@@ -16,7 +15,7 @@ def checkLogin(id:str, pw:str)->dict:
 
     msg = {'status':False, 'msg':''}
 
-    sql = f'''select username, email, phoneNumber, age, job, year_, is_admin, psword
+    sql = f'''select username, email, phoneNumber, age, job, year_, c_id, is_admin, psword
             from userInfo where username = "{id}"'''
     cursor.execute(sql)
     res = list(cursor)
@@ -284,6 +283,7 @@ def checkClassInvitation(username):
     select inviter, c_id, invite_time, invite_id
     from invite_info
     where invitee = '{username}'
+    order by invite_time desc
     '''
 
     class_name = []
@@ -403,7 +403,114 @@ def removeClassMember(remove_user, execute_user):
     quitClass(remove_user)
     return checkUserCLassInfo(execute_user)
 
+# 获取班级申请信息
+def checkClassApplication(c_id):
+    msg = {'is_empty': True}
+    # 获取用户邮箱
+    def getEmailByUsername(username):
+        sql = f'''
+        select email
+        from userInfo
+        where username = '{username}'
+        '''
+        cursor.execute(sql)
+        return list(cursor)[0][0]
+    
+    sql = f'''
+    select apply_id, applicant, apply_time
+    from application_info
+    where c_id = {c_id}
+    order by apply_time desc
+    '''
+    cursor.execute(sql)
+    res = list(cursor)
+
+    if len(res) == 0:
+        return msg
+
+    apply_info = [{'apply_id': info[0],
+                   'applicant': info[1],
+                   'apply_time': info[2],
+                   'email': getEmailByUsername(info[1])} for info in res]
+    msg['is_empty'] = False
+    msg['apply_info'] = apply_info
+    return msg
+
+# 处理申请信息
+def dealWithClassApplication(apply_id, action):
+    # 获取申请者 和申请班级
+    sql = f'''
+    select applicant, c_id
+    from application_info
+    where apply_id = {apply_id}
+    '''
+    cursor.execute(sql)
+    applicant, c_id = list(cursor)[0]
+
+    # 拒绝申请
+    if action == "reject":
+        sql = f'''
+        delete from application_info
+        where apply_id = {apply_id}
+        '''
+        cursor.execute(sql)
+        conn.commit()
+    # 同意申请
+    else:
+        # 更新用户班级
+        sql = f'''
+        update userInfo
+        set c_id = {c_id}
+        where username = '{applicant}'
+        '''
+        cursor.execute(sql)
+        conn.commit()
+
+        # 删除重复申请
+        sql = f'''
+        delete from application_info
+        where applicant = '{applicant}' and c_id = {c_id}
+        '''
+        cursor.execute(sql)
+        conn.commit()
+    
+    # 获取更新后的班级申请信息
+    return checkClassApplication(c_id)
+
+# 获取班级留言
+def checkClassMessages(c_id):
+    # 获取用户邮箱
+    def getEmailByUsername(username):
+        sql = f'''
+        select email
+        from userInfo
+        where username = '{username}'
+        '''
+        cursor.execute(sql)
+        return list(cursor)[0][0]
+
+    msg = {'is_empty' : True}
+    sql = f'''
+    select username, content, pub_time
+    from messages
+    where c_id = {c_id}
+    '''
+    cursor.execute(sql)
+    res = list(cursor)
+    if len(res) == 0:
+        return msg
+    
+    msg_info = [{'username' : info[0],
+                 'content' : info[1],
+                 'pub_time' : info[2],
+                 'email' : getEmailByUsername(info[0])} for info in res]
+    msg['is_empty'] = False
+    msg['msg_info'] = msg_info
+    
+    return msg_info
+    
+
 
 if __name__ == "__main__":
-    data = getTimeString()
+    data = checkLogin('ww', 'ww')
     print(data)

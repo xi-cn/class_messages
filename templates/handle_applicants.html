@@ -13,21 +13,24 @@
             {% if message %}
             <p style="color: rgb(22, 242, 10);">{{ message }}</p>
             {% endif %} 
+
+        {% if result.is_empty == false %}
         <div class="section">
             <h2>申请加入班级的同学</h2>
             <ul class="applicant-list">
-                {% for applicant in apply.class_applicants %}
+                {% for application in result.apply_info %}
                 <li class="applicant-item">
-                    <strong>{{ applicant.name }}</strong> - {{ applicant.contact }}
-                    <a href="{{url_for('approve_application', apply_id=applicant.name ,class_id=class_id,username=username)}}" class="btn">批准</a>
-                    <a href="{{url_for('reject_application',  apply_id=applicant.name ,class_id=class_id,username=username)}}" class="btn">拒绝</a>
+                    <strong>{{ application.applicant }}</strong> - {{ application.email }}
+                    <a href="{{url_for('response_application', apply_id=application.apply_id ,username=username, action='approve')}}" class="btn">批准</a>
+                    <a href="{{url_for('response_application', apply_id=application.apply_id ,username=username, action='reject')}}" class="btn">拒绝</a>
                 </li>
                 {% endfor %}
             </ul>
         </div>
+        {% endif %}
 
         <div class="section">
-            <a href="{{url_for('admin_class',username=username) }}">返回班级管理页面</a>
+            <a href="{{url_for('to_admin_class',username=username) }}">返回班级管理页面</a>
         </div>
     </div>
 </body>

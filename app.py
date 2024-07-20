@@ -181,50 +181,24 @@ def to_admin_class():
     return render_template('admin_class.html',class_data=class_data,username=username)
 
 
+# 前往处理申请页面
 @app.route('/to_handle_apply')
 def to_handle_apply():
     class_id=request.args.get('class_id')
     username=request.args.get('username')
-    #这边检索到申请信息
-    # 假设是 apply
-    apply = {
-    'class_applicants': [
-        {'id': 1, 'name': 'Applicant 1', 'contact': 'applicant1@example.com'},
-        {'id': 2, 'name': 'Applicant 2', 'contact': 'applicant2@example.com'},
-        # 其他申请者...
-    ]
-}
-    return render_template('handle_applicants.html',class_id=class_id,username=username,apply=apply,message="请处理以下信息")
+    
+    result = dbConn.checkClassApplication(class_id)
+    return render_template('handle_applicants.html',username=username,result=result)
 
-@app.route('/approve_application')
-def approve_application():
-    new_id=request.args.get('apply_id')
-    #同意申请
-    class_id=request.args.get('class_id')
-    #这边检索新的申请班级信息
-    apply = {
-    'class_applicants': [
-        {'id': 1, 'name': 'Applicant 1', 'contact': 'applicant1@example.com'},
-        # 其他申请者...
-    ]
-}
-    username=request.args.get('username')
-    return render_template('handle_applicants.html',class_id=class_id,username=username,apply=apply,message="处理成功")
 
-@app.route('/reject_application')
-def reject_application():
-    new_id=request.args.get('apply_id')
-    #拒绝申请
-    class_id=request.args.get('class_id')
-    #这边检索新的申请班级信息
-    apply = {
-    'class_applicants': [
-        {'id': 1, 'name': 'Applicant 1', 'contact': 'applicant1@example.com'},
-        # 其他申请者...
-    ]
-}
+# 处理申请
+@app.route('/response_application')
+def response_application():
     username=request.args.get('username')
-    return render_template('handle_applicants.html',class_id=class_id,username=username,apply=apply,message="处理成功")
+    response = request.args.get("action")
+    apply_id = request.args.get("apply_id")
+    result = dbConn.dealWithClassApplication(apply_id, response)
+    return render_template('handle_applicants.html',username=username,result=result)
 
 # 移除操作
 @app.route('/remove_member')
@@ -241,33 +215,8 @@ def remove_member():
 @app.route('/to_messages')
 def to_messages():
     username=request.args.get('username')
-    messages = [
-    {
-        'username': 'zhangsan',
-        'contact': 'zhangsan@example.com',
-        'content': '很高兴能和大家保持联系，希望以后多多交流！'
-    },
-    {
-        'username': 'lisi',
-        'contact': 'lisi@example.com',
-        'content': '回想起在校的日子，真是令人怀念。期待下次校友聚会。'
-    },
-    {
-        'username': 'wangwu',
-        'contact': 'wangwu@example.com',
-        'content': '希望大家在各自的工作岗位上都能取得成功。'
-    },
-    {
-        'username': 'zhaoliu',
-        'contact': 'zhaoliu@example.com',
-        'content': '感谢母校的培养，愿母校越办越好。'
-    },
-    {
-        'username': 'sunqi',
-        'contact': 'sunqi@example.com',
-        'content': '大家好，我是孙七，很高兴认识大家！'
-    }
-]
+    class_id = request.args.get('class_id')
+    messages = dbConn.checkClassMessages(class_id)
     return render_template('messages.html',username=username,messages=messages)
 
 @app.route('/to_my_messages')

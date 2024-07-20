@@ -27,7 +27,7 @@
         <div class="actions">
             <a href="{{ url_for('to_change_info',username=info['username']) }}" class="btn">修改信息</a>
             <a href="{{ url_for('to_class_info',username=info['username']) }}" class="btn">班级信息</a>
-            <a href="{{ url_for('to_messages',username=info['username']) }}" class="btn">校友留言</a>
+            <a href="{{ url_for('to_messages',username=info['username'],class_id=info[-3]) }}" class="btn">班级留言</a>
             <a href="{{ url_for('to_search_user',username=info['username']) }}" class="btn">搜索好友</a>
         </div>
     </div>
