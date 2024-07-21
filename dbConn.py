@@ -491,9 +491,10 @@ def checkClassMessages(c_id):
 
     msg = {'is_empty' : True}
     sql = f'''
-    select username, content, pub_time
+    select username, content, pub_time, msg_id
     from messages
     where c_id = {c_id}
+    order by pub_time desc
     '''
     cursor.execute(sql)
     res = list(cursor)
@@ -502,15 +503,57 @@ def checkClassMessages(c_id):
     
     msg_info = [{'username' : info[0],
                  'content' : info[1],
-                 'pub_time' : info[2],
+                 'date' : info[2],
+                 'msg_id' : info[3],
                  'email' : getEmailByUsername(info[0])} for info in res]
     msg['is_empty'] = False
     msg['msg_info'] = msg_info
     
     return msg_info
     
+# 获取用户留言
+def checkUserMessages(username, c_id):
+    msg = {'is_empty' : True}
+    sql = f'''
+    select content, pub_time, msg_id
+    from messages
+    where c_id = {c_id} and username = '{username}'
+    order by pub_time desc
+    '''
 
+    cursor.execute(sql)
+    res = list(cursor)
+    if len(res) == 0:
+        return msg
+
+    user_msg = [{'content' : info[0],
+                 'date' : info[1],
+                 'msg_id' : info[2]} for info in res]
+    msg['is_empty'] = False
+    msg['user_msg'] = user_msg
+    return msg
+
+# 删除留言
+def deleteMessages(msg_id):
+    sql = f'''
+    delete from messages
+    where msg_id = {msg_id}
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 发布新的留言
+def pubMessage(username, c_id, content):
+    content = content.replace("'", "''")
+    sql = f'''
+    insert into messages (username, c_id, content, pub_time)
+    values
+        ('{username}', {c_id}, '{content}', '{getTimeString()}')
+    '''
+    print(sql)
+    cursor.execute(sql)
+    conn.commit()
 
 if __name__ == "__main__":
-    data = checkLogin('ww', 'ww')
+    data = checkUserMessages('ww', 1)
     print(data)

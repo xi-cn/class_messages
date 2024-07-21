@@ -15,23 +15,26 @@
             <p style="color: rgb(211, 10, 242);">{{ message }}</p>
             {% endif %} 
             <div class="actions">
-                <a href="{{ url_for('return_userinfo2',username=username) }}" class="btn">返回主页</a> <!-- 返回主页的链接 -->
+                <a href="{{ url_for('return_userinfo',username=username) }}" class="btn">返回主页</a>
+                <a href="{{ url_for('to_new_message',username=username,class_id=class_id) }}" class="btn">新的留言</a>
 
             </div>
         </div>
         <div class="content">
             <ul class="my-messages-list">
-                {% for message in my_messages %}
+                {% if result.is_empty == false %}
+                {% for message in result.user_msg %}
                 <li class="my-message-item">
                     <div class="my-message-header">
-                        <strong>{{ message.title }}</strong> - {{ message.date }}
-                        <a href="{{ url_for('delete_my_message', username=username,message_id=message.id) }}" class="delete-btn">删除</a>
+                        <strong> title </strong> - {{ message.date }}
+                        <a href="{{ url_for('delete_my_message', username=username,msg_id=message.msg_id,class_id=class_id) }}" class="delete-btn">删除</a>
                     </div>
                     <div class="my-message-body">
                         <p>{{ message.content }}</p>
                     </div>
                 </li>
                 {% endfor %}
+                {% endif %}
             </ul>
         </div>
     </div>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改用户信息</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new_message.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/css/all.min.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>发布新的留言</h1>
+        </div>
+        <form action="pub_message">
+            <input type="hidden" name="class_id" value="{{ class_id }}">
+            <div class="content">
+                <textarea name="content" class="msg_input" required></textarea>
+            </div>
+            <div class="actions">
+                <a href="{{ url_for('to_my_messages', username=username, class_id=class_id) }}" class="btn">返回</a>
+                <button type="submit" class="btn send">发布</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

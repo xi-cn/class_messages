@@ -91,3 +91,18 @@ body {
 .actions .btn:hover {
     background-color: #9932cc; /* Darker shade of purple for hover */
 }
+
+.delete-btn {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 8px 16px;
+    color: #fff;
+    background-color: #ff6347; /* Red color for delete button */
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #dc143c; /* Darker red shade for hover */
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>校友留言</title>
+    <title>班级留言</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/css/all.min.css')}}">
 </head>
@@ -11,9 +11,9 @@
     <div class="container">
         <div class="header">
             <h2>Hi!{{username}}</h2>
-            <h1>校 友 留 言 板</h1>
+            <h1>班 级 留 言 板</h1>
             <div class="actions">   
-                <a href="{{ url_for('to_my_messages', username=username) }}" class="btn">我的留言</a>
+                <a href="{{ url_for('to_my_messages', username=username, class_id=class_id) }}" class="btn">我的留言</a>
                 <a href="{{ url_for('return_userinfo',username=username) }}" class="btn">返回主页</a> <!-- 返回主页的链接 -->
             </div>
         </div>
@@ -23,6 +23,7 @@
                 <li class="message-item">
                     <div class="message-header">
                         <strong>{{ message.username }}</strong> - {{ message.email }}
+                        <a href="{{ url_for('delete_class_message', username=username,msg_id=message.msg_id,class_id=class_id) }}" class="delete-btn">删除</a>
                     </div>
                     <div class="message-body">
                         <p>{{ message.content }}</p>

@@ -217,46 +217,54 @@ def to_messages():
     username=request.args.get('username')
     class_id = request.args.get('class_id')
     messages = dbConn.checkClassMessages(class_id)
-    return render_template('messages.html',username=username,messages=messages)
+    return render_template('messages.html',username=username,messages=messages,class_id=class_id)
 
+# 前往我的留言
 @app.route('/to_my_messages')
 def to_my_messages():
-    username=request.args.get('username')
-    my_messages = [
-        {
-            'id':1,
-            'title': '第一条消息标题',
-            'date': '2024-06-30',
-            'content': '这是第一条消息的内容。'
-        },
-        {
-            'id':2,
-            'title': '第二条消息标题',
-            'date': '2024-06-29',
-            'content': '这是第二条消息的内容。'
-        },
-        # Add more messages as needed
-    ]
+    username=session['info'][0]
+    class_id = request.args.get("class_id")
+    result = dbConn.checkUserMessages(username, class_id)
 
-    return render_template('my_messages.html',username=username,my_messages=my_messages)
+    return render_template('my_messages.html',username=username,result=result,class_id=class_id)
 
+# 删除个人留言
 @app.route('/delete_my_message')
 def delete_my_message():
-    username=request.args.get('username')
-    delete_id=request.args.get('message_id')
-    my_messages = [
-        {
-            'id':1,
-            'title': '第一条消息标题',
-            'date': '2024-06-30',
-            'content': '这是删除后，我的消息内容。'
-        },
-   
-        # Add more messages as needed
-    ]
+    username=session['info'][0]
+    class_id = request.args.get('class_id')
+    msg_id=request.args.get('msg_id')
 
-    return render_template('my_messages.html',message="删除成功",username=username,my_messages=my_messages)
-   
+    dbConn.deleteMessages(msg_id)
+    result = dbConn.checkUserMessages(username, class_id)
+
+    return render_template('my_messages.html',username=username,result=result,class_id=class_id)
+
+# 前往新留言页面
+@app.route('/to_new_message')
+def to_new_message():
+    username=session['info'][0]
+    class_id = request.args.get('class_id')
+    return render_template('new_message.html',username=username,class_id=class_id)
+
+# 发布新的留言
+@app.route('/pub_message')
+def pub_message():
+    username=session['info'][0]
+    class_id = request.args.get('class_id')
+    content = request.args.get('content')
+    dbConn.pubMessage(username, class_id, content)
+    return render_template('new_message.html',username=username,class_id=class_id)
+
+# 删除班级留言
+@app.route('/delete_class_message')
+def delete_class_message():
+    class_id = request.args.get('class_id')
+    msg_id = request.args.get('msg_id')
+    dbConn.deleteMessages(msg_id)
+    messages = dbConn.checkClassMessages(class_id)
+    return render_template('messages.html',messages=messages,class_id=class_id)
+
 
 @app.route('/to_search_user',methods=['POST','GET'])
 def to_search_user():
