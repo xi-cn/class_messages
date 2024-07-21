@@ -10,25 +10,22 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2>欢迎你！{{info['username']}}</h2>
+            <h2>欢迎你！{{user_info.username}}</h2>
             <h1>用 户 信 息</h1>
-            {% if message %}
-            <p style="color: rgb(22, 242, 10);">{{ message }}</p>
-            {% endif %} 
         </div>
         <div class="content">
-            <p><strong>用户名:</strong>{{ info[0] }}</p>
-            <p><strong>邮箱：</strong>{{ info[1] }}</p>
-            <p><strong>电话：</strong>{{ info[2] }}</p>
-            <p><strong>年龄：</strong>{{info[3] }}</p>
-            <p><strong>工作：</strong>{{ info[4] }}</p>
-            <p><strong>入学年份：</strong>{{ info[5] }}</p>
+            <p><strong>用户名:</strong>{{ user_info.username }}</p>
+            <p><strong>邮箱：</strong>{{ user_info.email }}</p>
+            <p><strong>电话：</strong>{{ user_info.phone }}</p>
+            <p><strong>年龄：</strong>{{ user_info.age }}</p>
+            <p><strong>工作：</strong>{{ user_info.job }}</p>
+            <p><strong>入学年份：</strong>{{ user_info.year }}</p>
         </div>
         <div class="actions">
-            <a href="{{ url_for('to_change_info',username=info['username']) }}" class="btn">修改信息</a>
-            <a href="{{ url_for('to_class_info',username=info['username']) }}" class="btn">班级信息</a>
-            <a href="{{ url_for('to_messages',username=info['username'],class_id=info[-3]) }}" class="btn">班级留言</a>
-            <a href="{{ url_for('to_search_user',username=info['username']) }}" class="btn">搜索好友</a>
+            <a href="{{ url_for('to_change_info') }}" class="btn">修改信息</a>
+            <a href="{{ url_for('to_class_info') }}" class="btn">班级信息</a>
+            <a href="{{ url_for('to_messages') }}" class="btn">班级留言</a>
+            <a href="{{ url_for('to_search_user') }}" class="btn">搜索好友</a>
         </div>
     </div>
 </body>

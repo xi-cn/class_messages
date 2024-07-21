@@ -21,8 +21,8 @@
                 {% for application in result.apply_info %}
                 <li class="applicant-item">
                     <strong>{{ application.applicant }}</strong> - {{ application.email }}
-                    <a href="{{url_for('response_application', apply_id=application.apply_id ,username=username, action='approve')}}" class="btn">批准</a>
-                    <a href="{{url_for('response_application', apply_id=application.apply_id ,username=username, action='reject')}}" class="btn">拒绝</a>
+                    <a href="{{url_for('response_application', apply_id=application.apply_id, action='approve')}}" class="btn">批准</a>
+                    <a href="{{url_for('response_application', apply_id=application.apply_id, action='reject')}}" class="btn">拒绝</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -30,7 +30,7 @@
         {% endif %}
 
         <div class="section">
-            <a href="{{url_for('to_admin_class',username=username) }}">返回班级管理页面</a>
+            <a href="{{url_for('to_admin_class') }}">返回班级管理页面</a>
         </div>
     </div>
 </body>

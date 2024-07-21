@@ -15,8 +15,8 @@
             <p style="color: rgb(211, 10, 242);">{{ message }}</p>
             {% endif %} 
             <div class="actions">
-                <a href="{{ url_for('return_userinfo',username=username) }}" class="btn">返回主页</a>
-                <a href="{{ url_for('to_new_message',username=username,class_id=class_id) }}" class="btn">新的留言</a>
+                <a href="{{ url_for('return_userinfo') }}" class="btn">返回主页</a>
+                <a href="{{ url_for('to_new_message') }}" class="btn">新的留言</a>
 
             </div>
         </div>
@@ -27,7 +27,7 @@
                 <li class="my-message-item">
                     <div class="my-message-header">
                         <strong> title </strong> - {{ message.date }}
-                        <a href="{{ url_for('delete_my_message', username=username,msg_id=message.msg_id,class_id=class_id) }}" class="delete-btn">删除</a>
+                        <a href="{{ url_for('delete_my_message', msg_id=message.msg_id) }}" class="delete-btn">删除</a>
                     </div>
                     <div class="my-message-body">
                         <p>{{ message.content }}</p>

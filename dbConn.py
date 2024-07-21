@@ -15,7 +15,7 @@ def checkLogin(id:str, pw:str)->dict:
 
     msg = {'status':False, 'msg':''}
 
-    sql = f'''select username, email, phoneNumber, age, job, year_, c_id, is_admin, psword
+    sql = f'''select username, psword
             from userInfo where username = "{id}"'''
     cursor.execute(sql)
     res = list(cursor)
@@ -33,23 +33,30 @@ def checkLogin(id:str, pw:str)->dict:
     #成功登录返回信息
     else:
         msg['status'] = True
-        msg['msg'] = '登录成功！'
-        msg['info'] = list(res[0])
+        msg['username'] = id
         return msg
 
 #获取用户信息
 def getUserInfo(uesrname):
     sql = f'''
-    select username, email, phoneNumber, age, job, year_, psword
+    select username, email, phoneNumber, age, job, year_
     from userInfo
     where username = '{uesrname}'
     '''
-    res = cursor.execute(sql)
-    return list(res[0])
+    cursor.execute(sql)
+    res = list(cursor)[0]
+
+    user_info = {'username' : res[0],
+                 'email' : res[1],
+                 'phone' : res[2],
+                 'age' : res[3],
+                 'job' : res[4],
+                 'year' : res[5]}
+
+    return user_info
 
 #注册用户
 def registerNewUser(userInfo):
-
     msg = {'status':False, "msg":''}
 
     #检查电话号码是否全为数字
@@ -190,18 +197,28 @@ def modifyUserInfo(username:str, userInfo):
     return msg
     
 #修改密码
-def modifyPassword(changeInfo, last_p):
+def modifyPassword(username, data):
+    # 获取用户密码
+    def getUserPassword(username):
+        sql = f'''
+        select psword
+        from userInfo
+        where username = '{username}'
+        '''
+        cursor.execute(sql)
+        return list(cursor)[0][0]
+
     msg = {'status':False, "msg":''}
 
-    user_name = changeInfo['user']
-    psword=changeInfo['last_password'] 
-    new_p=changeInfo['new_password']
-    confirm_p=changeInfo['confirm_password']    
+    psword=data['last_password'] 
+    new_p=data['new_password']
+    confirm_p=data['confirm_password']    
 
     if not new_p == confirm_p:
         msg['msg'] = "新密码不一致"
         return msg
-    if not last_p == psword:
+
+    if not getUserPassword(username) == psword:
         msg['msg'] = "原密码输入错误"
         return msg
     #非法密码
@@ -212,7 +229,7 @@ def modifyPassword(changeInfo, last_p):
     sql = f'''
     update userInfo
     set psword='{new_p}'
-    where username='{user_name}'
+    where username='{username}'
     '''
     cursor.execute(sql)
     conn.commit()
@@ -266,6 +283,21 @@ def checkUserCLassInfo(username):
     stus = [{'name':stu[0], 'contact':stu[1]} for stu in class_info]
     msg['students'] = stus
     return msg
+
+# 查看用户是否是管理员
+def checkIsAdmin(username):
+    sql = f'''
+    select is_admin
+    from userInfo
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    res = list(cursor)[0][0]
+
+    if res == 1:
+        return True
+    else:
+        return False
 
 # 查看班级邀请
 def checkClassInvitation(username):
@@ -477,8 +509,18 @@ def dealWithClassApplication(apply_id, action):
     # 获取更新后的班级申请信息
     return checkClassApplication(c_id)
 
+# 获取用户的班级id
+def getClassIdByUsername(username):
+    sql = f'''
+    select c_id
+    from userInfo
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    return list(cursor)[0][0]
+
 # 获取班级留言
-def checkClassMessages(c_id):
+def checkClassMessages(username):
     # 获取用户邮箱
     def getEmailByUsername(username):
         sql = f'''
@@ -488,6 +530,7 @@ def checkClassMessages(c_id):
         '''
         cursor.execute(sql)
         return list(cursor)[0][0]
+    c_id = getClassIdByUsername(username)
 
     msg = {'is_empty' : True}
     sql = f'''
@@ -512,7 +555,9 @@ def checkClassMessages(c_id):
     return msg_info
     
 # 获取用户留言
-def checkUserMessages(username, c_id):
+def checkUserMessages(username):
+    c_id = getClassIdByUsername(username)
+
     msg = {'is_empty' : True}
     sql = f'''
     select content, pub_time, msg_id
@@ -543,7 +588,10 @@ def deleteMessages(msg_id):
     conn.commit()
 
 # 发布新的留言
-def pubMessage(username, c_id, content):
+def pubMessage(username, content):
+
+    c_id = getClassIdByUsername(username)
+
     content = content.replace("'", "''")
     sql = f'''
     insert into messages (username, c_id, content, pub_time)
@@ -553,6 +601,63 @@ def pubMessage(username, c_id, content):
     print(sql)
     cursor.execute(sql)
     conn.commit()
+
+# 搜索用户
+def searchUser(data, option):
+    # 获取班级名称
+    def getClassNameById(c_id):
+
+        if c_id == None:
+            return ""
+
+        sql = f'''
+        select c_name
+        from class_info
+        where c_id = {c_id}
+        '''
+        cursor.execute(sql)
+        return list(cursor)[0][0]
+
+    msg = {'is_empty' : True}
+
+    sql = None
+    if option == 'name':
+        sql = f'''
+        select username, c_id, phoneNumber
+        from userInfo
+        where username='{data}'
+        '''
+    elif option == 'class':
+        sql = f'''
+        select username, c_id, phoneNumber
+        from userInfo
+        where c_id in (
+            select c_id
+            from class_info
+            where c_name = '{data}'
+        )
+        '''
+    else:
+        sql = f'''
+        select username, c_id, phoneNumber
+        from userInfo
+        where phoneNumber='{data}'
+        '''
+
+    cursor.execute(sql)
+    res = list(cursor)
+
+    if len(res) == 0:
+        return msg
+    
+    user_info = [{'username' : info[0],
+                 'class_name' : getClassNameById(info[1]),
+                 'phone' : info[2]} for info in res]
+
+    msg['is_empty'] = False
+    msg['user_info'] = user_info
+    return msg    
+
 
 if __name__ == "__main__":
     data = checkUserMessages('ww', 1)

@@ -118,3 +118,24 @@ body {
 .delete-btn:hover {
     background-color: #dc143c; /* Darker red shade for hover */
 }
+
+.btn-invite {
+    margin: 0 10px;
+    margin-left: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+
+    background-color: #0681c4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-invite:hover {
+    background-color: #71c4eb;
+}

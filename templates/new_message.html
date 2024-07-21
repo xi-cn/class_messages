@@ -13,12 +13,11 @@
             <h1>发布新的留言</h1>
         </div>
         <form action="pub_message">
-            <input type="hidden" name="class_id" value="{{ class_id }}">
             <div class="content">
                 <textarea name="content" class="msg_input" required></textarea>
             </div>
             <div class="actions">
-                <a href="{{ url_for('to_my_messages', username=username, class_id=class_id) }}" class="btn">返回</a>
+                <a href="{{ url_for('to_my_messages') }}" class="btn">返回</a>
                 <button type="submit" class="btn send">发布</button>
             </div>
         </form>

@@ -23,20 +23,27 @@
                 <select name="category">
                     <option value="class">班级</option>
                     <option value="name">姓名</option>
-                    <option value="admission_year">入学时间</option>
+                    <option value="phone">电话</option>
                 </select>
                 <button type="submit" class="btn-search">搜索</button>
             </form>
         </div>
         <div class="search-results">
+            {% if result %}
             <h2>搜索结果</h2>
             <ul class="user-list">
-                {% for user in search_results %}
+                {% if result.is_empty == false %}
+                {% for user in result.user_info %}
                 <li class="user-item">
-                    <strong>{{ user.name }}</strong> - {{ user.contact }}
+                    <strong>{{ user.username }}</strong> - {{ user.class_name }} - {{ user.phone }}
+                    {% if is_admin %}
+                    <button type="button" class="btn-invite">邀请</button>
+                    {% endif %}
                 </li>
                 {% endfor %}
+                {% endif %}
             </ul>
+            {% endif %}
         </div>
     </div>
 </body>
