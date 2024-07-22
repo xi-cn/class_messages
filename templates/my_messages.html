@@ -15,7 +15,7 @@
             <p style="color: rgb(211, 10, 242);">{{ message }}</p>
             {% endif %} 
             <div class="actions">
-                <a href="{{ url_for('return_userinfo') }}" class="btn">返回主页</a>
+                <a href="{{ url_for('to_messages') }}" class="btn">返回留言</a>
                 <a href="{{ url_for('to_new_message') }}" class="btn">新的留言</a>
 
             </div>
@@ -26,14 +26,40 @@
                 {% for message in result.user_msg %}
                 <li class="my-message-item">
                     <div class="my-message-header">
-                        <strong> title </strong> - {{ message.date }}
+                        {{ message.date }}
                         <a href="{{ url_for('delete_my_message', msg_id=message.msg_id) }}" class="delete-btn">删除</a>
                     </div>
                     <div class="my-message-body">
                         <p>{{ message.content }}</p>
                     </div>
+                    <div class="message_comments">
+                        <div class="hailer">
+                            <img src="../static/svg/hail-done.svg" alt="SVG Image" height="25">
+                            <p>{{ message.hailer }}</p>
+                        </div>
+                        <ul>
+                            {% for comment in message.comment %}
+                            <li class="comment">
+                                <div class="comment-head">
+                                    <p>{{ comment.username }} - {{ comment.comment_time }}</p>
+                                </div>
+                                <div class="comment-contet">
+                                    <p>{{ comment.content }}</p>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </li>
                 {% endfor %}
+                {% endif %}
+                {% if result.is_empty == true %}
+                <div class="remind_icon">
+                    <a href="{{ url_for('to_new_message') }}" >
+                        <img src="../static/svg/bubble-nomsg.svg" alt="SVG Image" width="150" height="150">
+                    </a>
+                    <h2>你还没有发布留言</h2>
+                </div>
                 {% endif %}
             </ul>
         </div>

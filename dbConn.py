@@ -263,7 +263,7 @@ def checkUserCLassInfo(username):
 
     # 查找班级成员
     sql = f'''
-    select username, phoneNumber, is_admin
+    select username, phoneNumber, email, year_, age, job, is_admin
     from userInfo
     where c_id = {c_id}
     '''
@@ -271,7 +271,7 @@ def checkUserCLassInfo(username):
     class_info = list(cursor)
     
     #查找班级管理员
-    admins = [user[0] for user in class_info if user[2] == 1]
+    admins = [user[0] for user in class_info if user[-1] == 1]
     admins = ','.join(admins)
 
     msg['have_class'] = True
@@ -280,7 +280,12 @@ def checkUserCLassInfo(username):
     msg['class_name'] = c_name
     msg['admin'] = admins
 
-    stus = [{'name':stu[0], 'contact':stu[1]} for stu in class_info]
+    stus = [{'name':stu[0], 
+             'contact':stu[1],
+             'email' : stu[2],
+             'year' : stu[3],
+             'age' : stu[4],
+             'job' : stu[5]} for stu in class_info]
     msg['students'] = stus
     return msg
 
@@ -357,7 +362,6 @@ def responseClassInvitation(username, invite_id, response):
         delete from invite_info
         where c_id = {c_id}
         '''
-        print(sql)
         cursor.execute(sql)
         conn.commit()
         # 加入班级
@@ -519,8 +523,43 @@ def getClassIdByUsername(username):
     cursor.execute(sql)
     return list(cursor)[0][0]
 
+# 获取留言的点赞者
+def getMessageHailer(msg_id):
+    # 获取点赞者
+    sql = f'''
+    select hail_id, username, hail_time
+    from hail_info
+    where msg_id = {msg_id}
+    order by hail_time desc
+    '''
+    cursor.execute(sql)
+    res = list(cursor)
+    if len(res) == 0:
+        return ""
+    
+    hailer = [info[1] for info in res]
+    return ",".join(hailer)
+
+# 获取留言的评论
+def getMessageComment(msg_id):
+    # 获取评论
+    sql = f'''
+    select comment_id, username, content, comment_time
+    from comment_info
+    where msg_id = {msg_id}
+    order by comment_time desc
+    '''
+    cursor.execute(sql)
+    res = list(cursor)
+    comments = [{'comment_id' : info[0],
+                 'username' : info[1],
+                 'content' : info[2],
+                 'comment_time' : info[3]} for info in res]
+    return comments
+
 # 获取班级留言
 def checkClassMessages(username):
+    msg = {'is_empty' : True, 'have_class' : False}
     # 获取用户邮箱
     def getEmailByUsername(username):
         sql = f'''
@@ -530,9 +569,24 @@ def checkClassMessages(username):
         '''
         cursor.execute(sql)
         return list(cursor)[0][0]
-    c_id = getClassIdByUsername(username)
+    # 判断是否被用户点赞过
+    def isMsgHailed(username, msg_id):
+        sql = f'''
+        select hail_id
+        from hail_info
+        where username='{username}' and msg_id = {msg_id}
+        '''
+        cursor.execute(sql)
+        if len(list(cursor)) == 0:
+            return False
+        else:
+            return True
 
-    msg = {'is_empty' : True}
+    c_id = getClassIdByUsername(username)
+    if c_id == None:
+        return msg
+    msg['have_class'] = True
+    
     sql = f'''
     select username, content, pub_time, msg_id
     from messages
@@ -548,11 +602,14 @@ def checkClassMessages(username):
                  'content' : info[1],
                  'date' : info[2],
                  'msg_id' : info[3],
-                 'email' : getEmailByUsername(info[0])} for info in res]
+                 'is_hailed' : isMsgHailed(username, info[3]),
+                 'email' : getEmailByUsername(info[0],),
+                 'hailer' : getMessageHailer(info[3]),
+                 'comment' : getMessageComment(info[3])} for info in res]
     msg['is_empty'] = False
     msg['msg_info'] = msg_info
     
-    return msg_info
+    return msg
     
 # 获取用户留言
 def checkUserMessages(username):
@@ -573,7 +630,9 @@ def checkUserMessages(username):
 
     user_msg = [{'content' : info[0],
                  'date' : info[1],
-                 'msg_id' : info[2]} for info in res]
+                 'msg_id' : info[2],
+                 'hailer' : getMessageHailer(info[2]),
+                 'comment' : getMessageComment(info[2])} for info in res]
     msg['is_empty'] = False
     msg['user_msg'] = user_msg
     return msg
@@ -598,7 +657,6 @@ def pubMessage(username, content):
     values
         ('{username}', {c_id}, '{content}', '{getTimeString()}')
     '''
-    print(sql)
     cursor.execute(sql)
     conn.commit()
 
@@ -658,6 +716,35 @@ def searchUser(data, option):
     msg['user_info'] = user_info
     return msg    
 
+# 留言点赞状态更新
+def updateHailStatus(username, msg_id, mode):
+    if mode == 'todo':
+        sql = f'''
+        insert into hail_info (username, msg_id, hail_time)
+        values
+            ('{username}', {msg_id}, '{getTimeString()}')
+        '''
+    else:
+        sql = f'''
+        delete from hail_info
+        where username = '{username}' and msg_id = {msg_id}
+        '''
+    try:
+        cursor.execute(sql)
+        conn.commit()
+    except:
+        return
+
+# 提交评论
+def sendComment(username, msg_id, content:str):
+    content = content.replace("'", "''")
+    sql = f'''
+    insert into comment_info (username, msg_id, content, comment_time)
+    values
+        ('{username}', {msg_id}, '{content}', '{getTimeString()}')
+    '''
+    cursor.execute(sql)
+    conn.commit()
 
 if __name__ == "__main__":
     data = checkUserMessages('ww', 1)

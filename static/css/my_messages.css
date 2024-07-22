@@ -1,4 +1,7 @@
 body {
+    display: flex;
+    align-items: center;
+    height: 100vh;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -12,7 +15,7 @@ body {
 
 .container {
     margin-top: auto;
-    width: 80%;
+    width: 60%;
     margin: 0 auto;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.1);
@@ -39,7 +42,7 @@ body {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 25px;
     box-shadow: 0 0 17px #404040;
-    color: #fff;
+    color: #333;
     overflow-y: auto;
     max-height: calc(100vh - 200px);
     text-align: left;
@@ -109,4 +112,8 @@ body {
 
 .delete-btn:hover {
     background-color: #dc143c; /* Darker red shade for hover */
+}
+
+.remind_icon {
+    text-align: center;
 }

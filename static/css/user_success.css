@@ -1,5 +1,9 @@
 body {
+    display: flex;
+    align-items: center;
+    height: 100vh;
     font-family: Arial, sans-serif;
+    overflow-y: auto;
     margin: 0;
     padding: 0;
     background: url(./bg2.png);
@@ -7,11 +11,10 @@ body {
     background-repeat: no-repeat;
     overflow: hidden;
     background-size: cover;
-    position: relative; /* 确保子元素的绝对定位是相对于body */
 }
 
 .container {
-    width: 80%;
+    width: 60%;
     margin: 0 auto;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.1);

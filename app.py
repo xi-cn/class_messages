@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template,redirect, url_for,session
+from flask import Flask, request, render_template,redirect, url_for,session, jsonify
 import dbConn
 
 
@@ -314,9 +314,11 @@ def to_messages():
         return render_template('main_page.html')
     
     username = session.get('username')
-    messages = dbConn.checkClassMessages(username)
+    result = dbConn.checkClassMessages(username)
+    is_admin = dbConn.checkIsAdmin(username)
+    result['is_admin'] = is_admin
 
-    return render_template('messages.html',username=username,messages=messages)
+    return render_template('messages.html',username=username,result=result)
 
 # 前往我的留言
 @app.route('/to_my_messages', methods=['POST','GET'])
@@ -418,6 +420,32 @@ def search_user():
     is_admin = dbConn.checkIsAdmin(username)
     return render_template('search_user.html',result=result,is_admin=is_admin)
 
+# 更新点赞信息
+@app.route('/update_hail_status', methods=['POST', 'GET'])
+def update_hail_status():
+    # 未登录则返回主页面
+    if session.get('username') == None:
+        return render_template('main_page.html')
+    username = session.get('username')
+
+    mode = request.json.get('mode')  
+    msg_id = request.json.get('msg_id')
+    
+    dbConn.updateHailStatus(username, msg_id, mode)
+    return jsonify({'status': 'success'})
+
+# 提交评论信息
+@app.route('/send_comment', methods=['POST', 'GET'])
+def send_comment():
+    # 未登录则返回主页面
+    if session.get('username') == None:
+        return render_template('main_page.html')
+    username = session.get('username')
+
+    content = request.json.get('content')
+    msg_id = request.json.get('msg_id')
+    dbConn.sendComment(username, msg_id, content)
+    return jsonify({'status': 'success'})
 
 
 if __name__ == '__main__':

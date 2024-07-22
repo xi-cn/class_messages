@@ -9,29 +9,207 @@
 </head>
 <body>
     <div class="container">
+        <div class="pop-window">
+            <textarea class="comment-input"></textarea>
+            <div class="option">
+                <div><img src="../static/svg/cancel.svg" id="cancel_input" alt="SVG Image"></div>
+                <div><img src="../static/svg/send.svg" id="send_input" alt="SVG Image"></div>
+            </div>
+        </div>
         <div class="header">
             <h2>Hi!{{username}}</h2>
             <h1>班 级 留 言 板</h1>
             <div class="actions">   
+                {% if result.have_class %}
                 <a href="{{ url_for('to_my_messages') }}" class="btn">我的留言</a>
+                {% endif %}
                 <a href="{{ url_for('return_userinfo') }}" class="btn">返回主页</a> <!-- 返回主页的链接 -->
             </div>
         </div>
         <div class="content">
             <ul class="message-list">
-                {% for message in messages %}
+                {% if result.have_class == false %}
+                <div class="remind_icon">
+                    <a href="{{ url_for('to_search_class') }}">
+                        <img src="../static/svg/sad-msg-noclass.svg" alt="SVG Image" width="150" height="150">
+                    </a>
+                    <h2>您还没有加入班级！</h2>
+                </div>
+                {% endif %}
+                
+                {% if result.have_class == true %}
+                {% if result.is_empty == false %}
+                {% for message in result.msg_info %}
                 <li class="message-item">
                     <div class="message-header">
                         <strong>{{ message.username }}</strong> - {{ message.email }}
+                        {% if result.is_admin %}
                         <a href="{{ url_for('delete_class_message',msg_id=message.msg_id ) }}" class="delete-btn">删除</a>
+                        {% endif %}
                     </div>
                     <div class="message-body">
                         <p>{{ message.content }}</p>
                     </div>
-                </li>
+                    <div class="message-bottom">
+                        {% if message.is_hailed == false %}
+                        <img src="../static/svg/hail-todo.svg" class="hail_img" mode="todo" msg_id="{{ message.msg_id }}" alt="SVG Image" height="25">
+                        {% endif %}
+                        {% if message.is_hailed == true %}
+                        <img src="../static/svg/hail-done.svg" class="hail_img" mode="done" msg_id="{{ message.msg_id }}" alt="SVG Image" height="25">
+                        {% endif %}
+                        <img src="../static/svg/comment.svg" alt="SVG Image" class="comment_img" msg_id="{{ message.msg_id }}" height="25">
+                        <img src="../static/svg/down-unfold.svg" class="fold_img" msg_id="{{ message.msg_id }}" direction="down" alt="SVG Image" height="25">
+                    </div>
+                    <div class="message_comments msg_id_{{ message.msg_id }}">
+                        <div class="hailer">
+                            <img src="../static/svg/hail-done.svg" alt="SVG Image" height="25">
+                            <p>{{ message.hailer }}</p>
+                        </div>
+                        <ul>
+                            {% for comment in message.comment %}
+                            <li class="comment">
+                                <div class="comment-head">
+                                    <p>{{ comment.username }} - {{ comment.comment_time }}</p>
+                                </div>
+                                <div class="comment-contet">
+                                    <p>{{ comment.content }}</p>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li> 
                 {% endfor %}
+                {% endif %}
+                {% if result.is_empty == true %}
+                <div class="remind_icon">
+                    <a href="{{ url_for('to_my_messages') }}">
+                        <img src="../static/svg/shock-nomsgs.svg" alt="SVG Image" width="150" height="150">
+                    </a>
+                    <h2>留言竟空空如也！</h2>
+                </div>
+                {% endif %}
+                {% endif %}
             </ul>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // 点赞标签
+            var hail_img_list = document.querySelectorAll('.hail_img')
+            hail_img_list.forEach(hail_img => {
+                hail_img.addEventListener('click', function(){
+                    mode = this.getAttribute('mode')
+                    msg_id = this.getAttribute('msg_id')
+                    console.log(msg_id)
+                    if (mode === "todo"){
+                        this.setAttribute('mode', 'done')
+                        this.src = "../static/svg/hail-done.svg"
+                    }
+                    else{
+                        this.setAttribute('mode', 'todo')
+                        this.src = "../static/svg/hail-todo.svg"
+                    }
+                    // 进行ajax请求
+                    var requestBody = {
+                        "mode" : mode,
+                        "msg_id" : msg_id
+                    }
+                    fetch('/update_hail_status', {
+                        "method": 'POST',  
+                        "headers": {  
+                            'Content-Type': 'application/json'  
+                        },  
+                        "body": JSON.stringify(requestBody) 
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                    })
+                    .catch(error => console.error('Error:', error));  
+                })
+            });
+
+            // 评论标签
+            var comment_img_list = document.querySelectorAll(".comment_img")
+            comment_img_list.forEach(comment_img => {
+                comment_img.addEventListener('click', function(){
+                    var input_box = document.querySelector(".pop-window")
+                    msg_id = this.getAttribute('msg_id')
+                    input_box.style.display = "flex"
+                    input_box.setAttribute('msg_id', msg_id)
+                })
+            })
+
+            // 取消评论
+            var cancel_img = document.querySelector('#cancel_input')
+            cancel_img.addEventListener('click', function(){
+                var input_box = document.querySelector(".pop-window")
+                input_box.style.display = 'none'
+                // 清空评论
+                comment_input = document.querySelector('.comment-input')
+                comment_input.value = ""
+                comment_input.placeholder = ""
+            })
+
+            // 发送评论
+            var send_img = document.querySelector('#send_input')
+            send_img.addEventListener('click', function(){
+                comment_input = document.querySelector('.comment-input')
+                comment = comment_input.value
+                if (comment === ""){
+                    comment_input.placeholder = "输入一些内容再提交吧！"
+                }
+                else {
+                    comment_input.placeholder = ""
+                    var input_box = document.querySelector(".pop-window")
+                    msg_id = input_box.getAttribute("msg_id")
+                    // 隐藏输入
+                    input_box.style.display = 'none'
+                    // 清空输入
+                    comment_input.value = ""
+
+                    var requestBody = {
+                        "content" : comment,
+                        "msg_id" : msg_id
+                    }
+                    fetch('/send_comment', {
+                        "method": 'POST',  
+                        "headers": {  
+                            'Content-Type': 'application/json'  
+                        },  
+                        "body": JSON.stringify(requestBody) 
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                    })
+                    .catch(error => console.error('Error:', error));  
+                }
+            })
+
+            // 展开关闭评论
+            var fold_img_list = document.querySelectorAll('.fold_img')
+            fold_img_list.forEach(fold_img=>{
+                fold_img.addEventListener('click', function(){
+                    msg_id = this.getAttribute('msg_id')
+                    comment_box = document.querySelector(`.msg_id_${msg_id}`)
+                    console.log(comment_box)
+                    direction = this.getAttribute('direction')
+
+                    if (direction == "down"){
+                        comment_box.style.display = "block"
+                        this.setAttribute('direction', 'up')
+                        this.src = "../static/svg/up-unfold.svg"
+                    }
+                    else{
+                        comment_box.style.display = "none"
+                        this.setAttribute('direction', 'down')
+                        this.src = "../static/svg/down-unfold.svg"
+                    }
+                })
+            })
+            
+        })
+    </script>
 </body>
 </html>

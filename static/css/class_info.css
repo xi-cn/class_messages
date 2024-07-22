@@ -10,7 +10,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    overflow-y: auto; /* 允许垂直滚动 */
+    overflow-y: auto;
 }
 
 .container {
@@ -85,4 +85,33 @@ body {
 
 .actions .btn:hover {
     background-color: #48f808;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.username, .phone, .age, .job, .year {
+    width: 15%;
+}
+
+.email {
+    flex-grow: 1;
+}
+
+.phone, .age, .job, .year, .email {
+    border-left: 3px solid #4b4949cb;
+}
+
+.username, .phone, .age, .job, .year, .email{
+    text-align: center;
+}
+
+ul li {
+    display: flex;
+}
+
+li .phone, li .age, li .job, li .year, li .email {
+    border-left: 3px solid #75717100;
 }
