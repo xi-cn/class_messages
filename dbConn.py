@@ -315,7 +315,22 @@ def checkClassInvitation(username):
         '''
         cursor.execute(sql)
         return list(cursor)[0][0]
+    # 获取当前用户的班级
+    def getClassNameByUsername(username):
+        sql = f'''
+        select c_id
+        from userInfo
+        where username = '{username}'
+        '''
+        cursor.execute(sql)
+        res = list(cursor)[0][0]
+        if res == None:
+            return ""
+        else:
+            return getClassNameById(res)
     
+    getClassNameByUsername(username)
+
     sql = f'''
     select inviter, c_id, invite_time, invite_id
     from invite_info
@@ -327,6 +342,7 @@ def checkClassInvitation(username):
 
     cursor.execute(sql)
     res = list(cursor)
+
     invite_info = [{'index':index, 
                     'inviter':info[0], 
                     'class_id':info[1], 
@@ -334,8 +350,8 @@ def checkClassInvitation(username):
                     'invite_time':info[2],
                     'invite_id': info[3]} 
                     for index, info in enumerate(res)]
-
-    return invite_info
+    class_name = getClassNameByUsername(username)
+    return invite_info, class_name
 
 # 响应班级邀请
 def responseClassInvitation(username, invite_id, response):
@@ -382,11 +398,32 @@ def quitClass(username):
     set c_id = null, is_admin = false
     where username = '{username}'
     '''
+    print(sql)
     cursor.execute(sql)
-    conn.commit()
+    # conn.commit()
+
+# 获取用户的班级
+def getUserClass(username):
+    sql = f'''
+    select c_id
+    from userInfo
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    res = list(cursor)[0][0]
+    if res == None:
+        return ""
+    else:
+        sql = f'''
+        select c_name
+        from class_info
+        where c_id = {res}
+        '''
+        cursor.execute(sql)
+        return list(cursor)[0][0]
 
 # 搜索班级
-def searchClass(data, method):
+def searchClass(username, data, method):
     msg = {'success':False}
     sql = None
     if method == "class_name":
@@ -409,6 +446,7 @@ def searchClass(data, method):
     class_info = [{'c_id':info[0],
                    'c_name':info[1]} for info in res]
     msg['success'] = True
+    msg['user_class'] = getUserClass(username)
     msg['class_info'] = class_info
     return msg
 
@@ -746,6 +784,26 @@ def sendComment(username, msg_id, content:str):
     cursor.execute(sql)
     conn.commit()
 
+# 邀请好友加入班级
+def inviteBuddy(inviter, invitee):
+    # 查找邀请者的班级
+    sql = f'''
+    select c_id
+    from userInfo
+    where username = '{inviter}'
+    '''
+    cursor.execute(sql)
+    c_id = list(cursor)[0][0]
+
+    # 插入邀请信息
+    sql = f'''
+    insert into invite_info (inviter, c_id, invitee, invite_time)
+    values
+        ('{inviter}',{c_id}, '{invitee}', '{getTimeString()}')
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
 if __name__ == "__main__":
-    data = checkUserMessages('ww', 1)
+    data = checkClassInvitation('a')
     print(data)

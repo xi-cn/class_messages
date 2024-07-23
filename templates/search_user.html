@@ -34,12 +34,15 @@
             <ul class="user-list">
                 {% if result.is_empty == false %}
                 {% for user in result.user_info %}
-                <li class="user-item">
-                    <strong>{{ user.username }}</strong> - {{ user.class_name }} - {{ user.phone }}
-                    {% if is_admin %}
-                    <button type="button" class="btn-invite">邀请</button>
-                    {% endif %}
-                </li>
+                <form action="/invite_buddy" method="post">
+                    <input type="hidden" name="invitee" value="{{ user.username }}">
+                    <li class="user-item">
+                        <strong>{{ user.username }}</strong> - {{ user.class_name }} - {{ user.phone }}
+                        {% if is_admin %}
+                        <button type="submit" class="btn-invite">邀请</button>
+                        {% endif %}
+                    </li>
+                </form>
                 {% endfor %}
                 {% endif %}
             </ul>

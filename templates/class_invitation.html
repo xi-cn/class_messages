@@ -8,6 +8,14 @@
 </head>
 <body>
     <div class="container">
+        <div class="pop-window" user_class="{{ class_name }}">
+            <h2 class="approve_reminder">确定接受吗</h2>
+            <div class="option-box">
+                <button class="cancel-btn">取消</button>
+                <button class="confirm-btn">确定</button>
+            </div>
+        </div>
+
         <div class="header">
             <h2>Hi! {{username}} 收到的班级邀请如下</h2>
         </div>
@@ -25,7 +33,7 @@
                             <button type="button" class = "response_btn" onclick="submitForm('refuse', {{ invitation.index }})">
                                 <img src="../static/svg/refuse.svg" alt="SVG Image" height="28">
                             </button>
-                            <button type="button" class = "response_btn" onclick="submitForm('agree', {{ invitation.index }})">
+                            <button type="button" class = "response_btn" onclick="clickApprove({{ invitation.index }})">
                                 <img src="../static/svg/agree.svg" alt="SVG Image" height="28">
                             </button>
                         </div>
@@ -50,6 +58,36 @@
             var forms = document.querySelectorAll('form[action="/response_invitation"]');
             forms[index].submit();  
         }  
+
+        // 点击接受邀请
+        function clickApprove(index) {
+            pop_window = document.querySelector('.pop-window')
+            user_class = pop_window.getAttribute('user_class')
+            h2 = document.querySelector('.approve_reminder')
+            if (user_class === ""){
+                h2.innerText = '你还没有加入班级, 确定加入吗 ?'
+            }
+            else {
+                h2.innerText = `你已经加入 ${user_class} 加入新班级会退出原班级, 确定加入吗 ?`
+            }
+            pop_window.setAttribute('index', index)
+            pop_window.style.display = 'block'
+        }
+        
+        // 取消加入新班级
+        cancel_btn = document.querySelector(".cancel-btn")
+        cancel_btn.addEventListener('click', function() {
+            pop_window = document.querySelector('.pop-window')
+            pop_window.style.display = 'none'
+        })
+
+        // 确定加入新班级
+        confirm_btn = document.querySelector('.confirm-btn')
+        confirm_btn.addEventListener('click', function() {
+            pop_window = document.querySelector('.pop-window')
+            index = pop_window.getAttribute('index')
+            submitForm ('agree', index)
+        })
 
     </script>
 </body>

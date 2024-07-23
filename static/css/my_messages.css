@@ -117,3 +117,14 @@ body {
 .remind_icon {
     text-align: center;
 }
+
+.hailer {
+    display: flex;
+    height: 50px;
+    align-items: center;
+}
+
+.hailer p {
+    margin-left: 10px;
+    font-size: 20px;
+}

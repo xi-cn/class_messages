@@ -115,3 +115,50 @@ ul li {
 li .phone, li .age, li .job, li .year, li .email {
     border-left: 3px solid #75717100;
 }
+
+.dropclass-btn {
+    border: none;
+}
+
+.pop-window {
+    display: none;
+    /* display: block; */
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    transform: translate(-50%, -50%);
+    width:20%;
+    height: 20%;
+    border-radius: 20px;
+    background: #84d1ed;
+    text-align: center;
+    justify-content: center;
+    color: #f4f4f4;
+}
+
+.option-box {
+    width: 100%;
+    margin-top: 80px;
+}
+
+.cancel-btn, .confirm-btn {
+    display: inline-block; /* Change to inline-block for buttons */
+    margin: 0 10px; /* Add margin between buttons */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #4be753; /* Change button color to purple */
+    border-radius: 5px;
+    box-shadow: 0 0 10px #404040;
+    transition: background-color 0.3s ease;
+    cursor: pointer; /* Add cursor pointer for buttons */
+    border: none; /* Remove border for buttons */
+}
+
+.cancel-btn:hover, .confirm-btn:hover {
+    background-color: #b9ecbc;
+}

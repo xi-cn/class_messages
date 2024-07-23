@@ -8,6 +8,14 @@
 </head>
 <body>
     <div class="container">
+
+        <div class="pop-window">
+            <h2 class="approve_reminder">请先退出当前班级后重试</h2>
+            <div class="option-box">
+                <button class="confirm-btn">确定</button>
+            </div>
+        </div>
+
         <div class="header">
             <h1>Hi!{{ username }},在这里可以搜索班级</h1>
             {% if message %}
@@ -33,11 +41,11 @@
             <ul class="class-list">
                 {% if result.success %}
                 {% for class_ in result.class_info %}
-                <form action="/apply_class" method="post">
+                <form action="/apply_class" method="post" class="class_id_{{ class_.c_id }}">
                     <input type="hidden" name="c_id" value="{{ class_.c_id }}">
                     <li class="class-item">
                         <strong>{{ class_.c_id }}</strong> - {{ class_.c_name }}
-                        <button type="submit" class="btn-apply">申请</button>
+                        <button type="button" class="btn-apply" onclick='tryApplyClass("class_id_{{ class_.c_id }}", "{{ result.user_class }}")'>申请</button>
                     </li>
                 </form>
                 {% endfor %}
@@ -46,5 +54,25 @@
             {% endif %}
         </div>
     </div>
+
+    <script>
+        function tryApplyClass(class_id, user_class){
+            if (user_class === ""){
+                form = document.querySelector(`.${class_id}`)
+                form.submit()
+            }
+            else {
+                pop_window = document.querySelector('.pop-window')
+                pop_window.style.display = 'block'
+            }
+        }
+
+        confirm_btn = document.querySelector('.confirm-btn')
+        confirm_btn.addEventListener('click', function() {
+            pop_window = document.querySelector('.pop-window')
+            pop_window.style.display = 'none'
+        })
+    </script>
+
 </body>
 </html>

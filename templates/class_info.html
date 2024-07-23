@@ -14,6 +14,15 @@
             document.write(
                 `
     <div class="container">
+
+        <div class="pop-window">
+            <h2 class="delete_reminder">确定退出班级吗?</h2>
+            <div class="option-box">
+                <button class="cancel-btn">取消</button>
+                <button class="confirm-btn">确定</button>
+            </div>
+        </div>
+
         <div class="header">
             <h2>Hi! {{username}}你的班级信息如下：</h2>
             <div>
@@ -51,7 +60,9 @@
         </div>
         <div class="actions">
             <a href="{{ url_for('return_userinfo') }}" class="btn">返回主页</a>
-            <a href="{{ url_for('out_class') }}" class="btn">退出班级</a>
+            <form action="/out_class" class='dropclass-form' method='post'>
+                <button type='button' class="btn dropclass-btn">退出班级</button>
+            </form>
             {% if is_admin %}
             <a href="{{ url_for('to_admin_class') }}" class="btn">管理班级</a>
             {% endif %}
@@ -81,6 +92,29 @@
                 `
             )
         }
+
+    // 点击退出班级按钮
+    drop_btn = document.querySelector('.dropclass-btn')
+    drop_btn.addEventListener('click', function() {
+        pop_window = document.querySelector('.pop-window')
+        pop_window.style.display = 'block'
+    })
+
+    // 点击取消按钮
+    cancel_btn = document.querySelector(".cancel-btn")
+    cancel_btn.addEventListener('click', function() {
+        pop_window = document.querySelector('.pop-window')
+        pop_window.style.display = 'none'
+    })
+
+    // 点击确定按钮
+    confirm_btn = document.querySelector('.confirm-btn')
+    confirm_btn.addEventListener('click', function() {
+        form = document.querySelector('.dropclass-form')
+        console.log(form)
+        form.submit()
+    })
+
     </script>
 </body>
 

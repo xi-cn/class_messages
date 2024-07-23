@@ -19,13 +19,24 @@
             <p><strong>班级管理员：</strong>{{ class_data.admin }}</p>
         </div>
 
+        <div class="pop-window">
+            <h2 class="delete_reminder">确定删除吗</h2>
+            <form action="/to_admin_class" class="delete-form">
+                <div class="option-box">
+                    <button class="cancel-btn">取消</button>
+                    <button class="confirm-btn">确定</button>
+                </div>
+            </form>
+        </div>
+
         <div class="content">
             <h2>班级成员</h2>
             <ul class="member-list">
                 {% for member in class_data.students %}
                 <li class="member-item">
                     <strong>{{ member.name }}</strong> - {{ member.contact }}
-                    <a href="{{ url_for('remove_member',class_id=class_data.class_id, member_name=member.name) }}" class="btn remove-btn">移除</a>
+                    <button class="btn remove-btn", member_name={{member.name}}>移除</button>
+                    <!-- <a href="{{ url_for('remove_member',class_id=class_data.class_id, member_name=member.name) }}" class="btn remove-btn">移除</a> -->
                 </li>
                 {% endfor %}
             </ul>
@@ -41,5 +52,56 @@
             <a href="{{ url_for('to_class_info') }}"  class="btn">返回个人班级</a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // 点击移除按钮
+            remove_btn_list = document.querySelectorAll('.remove-btn')
+            remove_btn_list.forEach(remove_btn => {
+                remove_btn.addEventListener('click', function() {
+                    member_name = this.getAttribute("member_name")
+
+                    pop_window = document.querySelector('.pop-window')
+                    pop_window.setAttribute('member_name', member_name)
+                    h2 = document.querySelector('.delete_reminder')
+                    h2.textContent  = `确定将${member_name}从班级中移除吗?`
+                    pop_window.style.display = 'block'
+                })
+            });
+
+            // 点击取消按钮
+            cancel_btn = document.querySelector(".cancel-btn")
+            cancel_btn.addEventListener('click', function() {
+                pop_window = document.querySelector('.pop-window')
+                pop_window.style.display = 'none'
+            })
+
+            // 点击确定按钮
+            confirm_btn = document.querySelector('.confirm-btn')
+            confirm_btn.addEventListener('click', function() {
+                pop_window = document.querySelector('.pop-window')
+                member_name = pop_window.getAttribute('member_name')
+                pop_window.style.display = 'none'
+
+                var requestBody = {
+                    'member_name' : member_name
+                }
+                
+                fetch('/remove_member', {
+                    'method' : 'POST',
+                    "headers": {  
+                        'Content-Type': 'application/json'  
+                    },  
+                    "body": JSON.stringify(requestBody)
+                })
+                .catch(error => console.error('Error:', error));  
+                
+                // 刷新页面
+                from = document.querySelector('.delete-form')
+                from.submit()
+            })
+        })
+    </script>
+
 </body>
 </html>

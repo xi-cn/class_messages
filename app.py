@@ -107,7 +107,7 @@ def change_info():
 
     res = dbConn.modifyUserInfo(username, data)
     if res['status'] == False:
-        return render_template('change_info.html',message=res['msg'],user_info=session['info'])
+        return render_template('change_info.html',message=res['msg'],user_info=session['user_info'])
     else:
         #更新session
         user_info = dbConn.getUserInfo(username)
@@ -167,8 +167,8 @@ def to_invitation():
         return render_template('main_page.html')
     username = session.get('username')
 
-    invite_info = dbConn.checkClassInvitation(username)
-    return render_template("class_invitation.html", invite_info=invite_info)
+    invite_info, class_name = dbConn.checkClassInvitation(username)
+    return render_template("class_invitation.html", invite_info=invite_info, class_name=class_name)
 
 #响应邀请
 @app.route("/response_invitation", methods=['POST','GET'])
@@ -185,8 +185,8 @@ def response_invitation():
         response = request.args.get("response")
         invite_id = request.args.get("invite_id")
 
-    invite_info = dbConn.responseClassInvitation(username, invite_id, response)
-    return render_template("class_invitation.html", invite_info=invite_info)
+    invite_info, class_name = dbConn.responseClassInvitation(username, invite_id, response)
+    return render_template("class_invitation.html", invite_info=invite_info, class_name=class_name)
 
 # 切换到搜索班级界面
 @app.route('/to_search_class', methods=['POST','GET'])
@@ -197,14 +197,14 @@ def to_search_class():
 
     return render_template("search_class.html")
     
-
 # 搜索班级
 @app.route('/search_class', methods=['POST','GET'])
 def search_class():
     # 未登录则返回主页面
     if session.get('username') == None:
         return render_template('main_page.html')
-    
+    username = session.get('username')
+
     if request.method == 'POST':
         data = request.form.get("query")
         method = request.form.get("category")
@@ -212,7 +212,7 @@ def search_class():
         data = request.args.get("query")
         method = request.args.get("category")
 
-    res = dbConn.searchClass(data, method)
+    res = dbConn.searchClass(username, data, method)
     return render_template("search_class.html", result=res)
 
 # 申请加入班级
@@ -232,7 +232,7 @@ def apply_class():
     return render_template("search_class.html")
 
 #退出班级
-@app.route('/outclass', methods=['POST','GET'])
+@app.route('/out_class', methods=['POST','GET'])
 def out_class():
     # 未登录则返回主页面
     if session.get('username') == None:
@@ -242,7 +242,6 @@ def out_class():
     # 退出班级
     dbConn.quitClass(username)
     return render_template('user_success.html',user_info=session['user_info'])
-
 
 # 前往管理班级页面
 @app.route('/to_admin_class', methods=['POST','GET'])
@@ -271,7 +270,6 @@ def to_handle_apply():
     result = dbConn.checkClassApplication(class_id)
     return render_template('handle_applicants.html',username=username,result=result)
 
-
 # 处理申请
 @app.route('/response_application', methods=['POST','GET'])
 def response_application():
@@ -297,14 +295,10 @@ def remove_member():
         return render_template('main_page.html')
     
     execute_user = session.get('username')
-    if request.method == 'POST':
-        remove_user = request.form.get("member_name")
-    else:
-        remove_user = request.args.get("member_name")
+    remove_user = request.json.get("member_name")
 
     class_data = dbConn.removeClassMember(remove_user, execute_user)
     return render_template('admin_class.html',class_data=class_data)
-
 
 # 前往留言页面
 @app.route('/to_messages', methods=['POST','GET'])
@@ -388,8 +382,10 @@ def delete_class_message():
     else:
         msg_id = request.args.get('msg_id')
     dbConn.deleteMessages(msg_id)
-    messages = dbConn.checkClassMessages(username)
-    return render_template('messages.html',messages=messages,username=username)
+    result = dbConn.checkClassMessages(username)
+    is_admin = dbConn.checkIsAdmin(username)
+    result['is_admin'] = is_admin
+    return render_template('messages.html',result=result,username=username)
 
 # 前往搜索用户页面
 @app.route('/to_search_user',methods=['POST','GET'])
@@ -446,6 +442,27 @@ def send_comment():
     msg_id = request.json.get('msg_id')
     dbConn.sendComment(username, msg_id, content)
     return jsonify({'status': 'success'})
+
+# 邀请好友加入班级
+@app.route('/invite_buddy', methods=['POST', 'GET'])
+def invite_buddy():
+    # 未登录则返回主页面
+    if session.get('username') == None:
+        return render_template('main_page.html')
+    inviter = session.get('username')
+    if request.method == 'POST':
+        invitee = request.form.get('invitee')
+    else:
+        invitee = request.args.get('invitee')
+    
+    dbConn.inviteBuddy(inviter, invitee)
+    return render_template('search_user.html',username=inviter)
+    
+# 退出登录
+@app.route('/exit', methods=['POST', 'GET'])
+def exit():
+    session['username'] = None
+    return render_template('main_page.html')
 
 
 if __name__ == '__main__':
