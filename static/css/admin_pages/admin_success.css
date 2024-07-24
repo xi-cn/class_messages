@@ -59,10 +59,49 @@ body {
 
 .class-box {
     display: inline-block;
+    border-radius: 20px;
     margin-left: 20px;
     margin-right: 20px;
     margin-bottom: 30px;
     height: 150px;
     width: 220px;
-    background-color: #280404;
+    background-color: #76e5d6;
+    text-align: center;
+}
+
+.class_header {
+    display: flex;
+    padding-top: 10px;
+    height: 40px;
+}
+
+.class_header div {
+    display: flex;
+    box-sizing: border-box;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+.mamber_amount {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.mamber_amount h4 {
+    padding: 0;
+    margin: 0;
+}
+
+.manage-btn {
+    border: none;
+    border-radius: 8px;
+    width: 80px;
+    height: 30px;
+    background-color: #48c2eb;
+}
+
+.manage-btn:hover {
+    background-color: #a5d4e3;
+    cursor: pointer;
 }
