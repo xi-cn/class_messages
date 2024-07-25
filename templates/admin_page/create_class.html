@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../static/css/admin_pages/create_class.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <ul class="nav">
+                <li>
+                    <form action="/to_admin_success">
+                        <button type="submit" class="nav-btn">
+                            班级管理
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_create_class">
+                        <button type="submit" class="nav-btn">
+                            创建班级
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_admin_user">
+                        <button type="submit" class="nav-btn">
+                            用户管理
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <div class="pop-window">
+            <h4>创建成功</h4>
+            <button type="button" class="confirm-btn">确定</button>
+        </div>
+        <div class="content">
+            <div class="create-box">
+                <input type="text" class="class-name" placeholder="班级名称">
+                <button type="button" class="class-btn">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建新班级
+        var create_btn = document.querySelector('.class-btn')
+        create_btn.addEventListener('click', function() {
+            var name_input = document.querySelector('.class-name')
+            class_name = name_input.value
+            name_input.value = ""
+            var class_id = -1
+
+            requestBody = {
+                'class_name' : class_name
+            }
+            fetch('/create_class', {
+                'method' : 'POST',
+                "headers": {  
+                    'Content-Type': 'application/json'  
+                },  
+                "body": JSON.stringify(requestBody)
+            })
+            .then(response => response.json())
+            .then(data => {
+                h4 = document.querySelector('.pop-window h4')
+                h4.innerText = `创建成功, 新班级编号为${data['class_id']}`
+            })
+            .catch(error => console.error('Error:', error));  
+
+            pop_window = document.querySelector('.pop-window')
+            pop_window.style.display = 'block'
+        })
+
+        // 确定按钮
+        confirm_btn = document.querySelector('.confirm-btn')
+        confirm_btn.addEventListener('click', function() {
+            pop_window = document.querySelector('.pop-window')
+            pop_window.style.display = "none"
+        })
+    </script>
+
+</body>
+</html>

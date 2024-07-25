@@ -49,22 +49,6 @@ def user_login():
         session['user_info'] = user_info
         return render_template('user_success.html', user_info=user_info)
 
-# 管理员登录
-@app.route('/admin_login')
-def admin_login():
-    if request.method=='POST':
-        id=request.form['username']
-        pw=request.form['password']
-        # 这两个是从前端传来的 用户名和 数据  
-        # 这里后端代码略  此处是登录功能
-        # 此处应该能判断 是否成功登录 成功跳转至成功页面 否则重新回到登陆页面并告诉错误理由
-        info=[] 
-        return render_template('admin_login.html',message="管理员不存在！再试试吧")
-        return render_template('admin_login.html',"密码错误，再试一次吧！")
-        return render_template('admin_success.html',info=info) 
-
-            #  注册函数  注册完跳转用户登录页面
-
 # 用户注册
 @app.route('/register',methods=['POST','GET'])
 def register():
@@ -75,7 +59,15 @@ def register():
             return render_template('user_login.html',message=res['msg'])
         else:
             return render_template('user_login.html',message=res['msg'])
-    
+
+# 管理员登录
+@app.route('/admin_login', methods=['POST', 'GET'])
+def admin_login():
+    session['admin_login'] = True
+    result = dbConn.getAllClassInfo()
+    return render_template('admin_page/admin_success.html', result=result)
+
+
 # 返回个人主页
 @app.route('/return_userinfo', methods=['POST','GET'])
 def return_userinfo():
@@ -464,6 +456,140 @@ def exit():
     session['username'] = None
     return render_template('main_page.html')
 
+# 前往管理员主页
+@app.route('/to_admin_success', methods=['POST', 'GET'])
+def to_admin_sucess():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    
+    result = dbConn.getAllClassInfo()
+    return render_template('admin_page/admin_success.html', result=result)
+
+# 前往管理员班级页面
+@app.route('/to_manage_class', methods=['POST', 'GET'])
+def to_manage_class():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    
+    if request.method == 'POST':
+        class_id = request.form.get('class_id')
+        class_name = request.form.get('class_name')
+    else:
+        class_id = request.args.get('class_id')
+        class_name = request.args.get('class_name')
+    result = dbConn.getAllClassUserInfo(class_id)
+    result['class_id'] = class_id
+    result['class_name'] = class_name
+    return render_template('admin_page/manage_class.html',result=result)
+
+# 更新用户身份
+@app.route('/update_user_identity', methods=['POST', 'GET'])
+def update_user_identity():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        identity = request.form.get('identity')
+        class_id = request.form.get('class_id')
+        class_name = request.form.get('class_name')
+    else:
+        username = request.args.get('username')
+        identity = request.args.get('identity')
+        class_id = request.args.get('class_id')
+        class_name = request.args.get('class_name')
+    dbConn.updateUserIdentity(username, identity)
+    result = dbConn.getAllClassUserInfo(class_id)
+    result['class_id'] = class_id
+    result['class_name'] = class_name
+    return render_template('admin_page/manage_class.html',result=result)
+
+# 管理员移除班级成员
+@app.route('/remove_class_member', methods=['POST', 'GET'])
+def remove_class_member():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        class_id = request.form.get('class_id')
+        class_name = request.form.get('class_name')
+    else:
+        username = request.args.get('username')
+        class_id = request.args.get('class_id')
+        class_name = request.args.get('class_name')
+    dbConn.removeClassMemberByAdmin(username)
+    result = dbConn.getAllClassUserInfo(class_id)
+    result['class_id'] = class_id
+    result['class_name'] = class_name
+    return render_template('admin_page/manage_class.html',result=result)
+
+# 前往创建班级页面
+@app.route('/to_create_class', methods=['POST', 'GET'])
+def to_create_class():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+
+    return render_template('admin_page/create_class.html')
+
+# 前往用户管理页面
+@app.route('/to_admin_user', methods=['POST', 'GET'])
+def to_admin_user():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+
+    result = dbConn.getAllUserInfo()
+    return render_template('admin_page/manage_user.html',result=result)
+
+# 重置用户密码
+@app.route('/reset_user_password', methods=['POST', 'GET'])
+def reset_user_password():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+    else:
+        username = request.args.get('username')
+    dbConn.resetUserPassword(username)
+    result = dbConn.getAllUserInfo()
+    return render_template('admin_page/manage_user.html',result=result)
+
+# 更新用户班级
+@app.route('/update_user_class', methods=['POST', 'GET'])
+def update_user_class():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+        class_id = request.form.get('class_id')
+    else:
+        username = request.args.get('username')
+        class_id = request.args.get('class_id')
+
+    dbConn.updateUserClass(username, class_id)
+    result = dbConn.getAllUserInfo()
+    return render_template('admin_page/manage_user.html',result=result)
+
+# 注销用户
+@app.route('/distory_user', methods=['POST', 'GET'])
+def distory_user():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+    else:
+        username = request.args.get('username')
+
+    dbConn.distoryUser(username)
+    result = dbConn.getAllUserInfo()
+    return render_template('admin_page/manage_user.html',result=result)
+
+# 创建班级
+@app.route('/create_class', methods = ['POST', 'GET'])
+def create_user():
+    class_name = request.json.get('class_name')
+    class_id = dbConn.create_class(class_name)
+    return jsonify({'class_id': class_id})
 
 if __name__ == '__main__':
     app.run(debug=True)

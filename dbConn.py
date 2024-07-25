@@ -804,6 +804,147 @@ def inviteBuddy(inviter, invitee):
     cursor.execute(sql)
     conn.commit()
 
+# 获取班级人数
+def getClassMemberNum(c_id):
+    sql = f'''
+    select count(c_id)
+    from userInfo
+    where c_id = {c_id}
+    '''
+    cursor.execute(sql)
+    return list(cursor)[0][0]
+
+# 管理员获取所有班级信息
+def getAllClassInfo():
+    sql = f'''
+    select c_id, c_name
+    from class_info
+    '''
+    cursor.execute(sql)
+    res = list(cursor)
+ 
+    result = [{'class_id' : info[0],
+               'class_name' : info[1],
+               'member_num' : getClassMemberNum(info[0])} for info in res]
+    return result
+
+# 获取班级中所有用户的信息
+def getAllClassUserInfo(c_id):
+    sql = f'''
+    select username, email, phoneNumber, age, year_, job, is_admin
+    from userInfo
+    where c_id = {c_id}
+    '''
+    cursor.execute(sql)
+    user_info = [{'username' : info[0],
+               'email' : info[1],
+               'phone' : info[2],
+               'age' : info[3],
+               'year' : info[4],
+               'job' : info[5],
+               'is_admin' : info[6]} for info in list(cursor)]
+    result = {'user_info' : user_info}
+    return result
+
+# 管理员更新用户身份
+def updateUserIdentity(username, response):
+    if response == '0':
+        new_id = 1
+    else:
+        new_id = 0
+    sql = f'''
+    update userInfo
+    set is_admin = {new_id}
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 管理员移除班级成员
+def removeClassMemberByAdmin(username):
+    sql = f'''
+    update userInfo
+    set is_admin = 0, c_id = null
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 获取所有用户的信息
+def getAllUserInfo():
+    def getClassName(c_id):
+        if c_id == None:
+            return ""
+        sql = f'''
+        select c_name
+        from class_info
+        where c_id = {c_id}
+        '''
+        cursor.execute(sql)
+        return list(cursor)[0][0]
+
+    sql = f'''
+    select username, email, phoneNumber, age, job, year_, c_id
+    from userInfo
+    '''
+    cursor.execute(sql)
+
+    result = [{'username' : info[0],
+               'email' : info[1],
+               'phone' : info[2],
+               'age' : info[3],
+               'job' : info[4],
+               'year' : info[5],
+               'class_id' : info[6],
+               'class_name' : getClassName(info[6])} for info in list(cursor)]
+    return result
+
+# 重置用户密码
+def resetUserPassword(username):
+    sql = f'''
+    update userInfo
+    set psword = '88888888'
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 更新用户班级
+def updateUserClass(username, class_id):
+    sql = f'''
+    update userInfo
+    set c_id = {class_id}, is_admin = 0
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 注销用户
+def distoryUser(username):
+    sql = f'''
+    delete from userInfo
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 创建班级
+def create_class(class_name):
+    sql = f'''
+    insert into class_info (c_name)
+    values
+        ('{class_name}')
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+    sql = '''
+    select max(c_id)
+    from class_info
+    '''
+    cursor.execute(sql)
+    return list(cursor)[0][0]
+
 if __name__ == "__main__":
     data = checkClassInvitation('a')
     print(data)

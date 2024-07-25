@@ -6,6 +6,11 @@ body {
     font-size: 20px;
 }
 
+button {
+    font-size: 20px;
+    cursor: pointer;
+}
+
 .container {
     margin-top: 0;
     border-radius: 20px;
@@ -43,58 +48,17 @@ body {
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     padding: 0px;
+    padding-left: 50px;
+    padding-right: 50px;
     width: 100%;
-    height: 100%;
+    height: auto;
     background-color: #8ad23d;
-}
-
-.class_header {
-    box-sizing: border-box;
-    display: flex;
-    padding-left: 10px;
-    padding-right: 30px;
-    height: 50px;
-    width: 100%;
-    background-color: #928f8f;
-    align-items: center;
-}
-
-.class_name {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
-}
-
-.class_name h4 {
-    padding: 0;
-    margin: 0;
-}
-
-.class_body {
-    display: flex;
-    height: 100%;
-    width: 100%;
-}
-
-.left_area {
-    flex-grow: 1;
-    height: 100%;
-    background-color: #de3fc4;
-}
-
-.right_area {
-    width: 75%;
-    height: 100%;
-    padding: 40px;
-    background-color: #78ef98;
 }
 
 .member_container {
     width: 100%;
-    max-height: 100%;
+    height: 100%;
     box-sizing: border-box;
-    overflow-y: scroll;
     border-radius: 20px;
     padding-top: 5px;
     padding-left: 20px;
@@ -117,25 +81,24 @@ body {
     align-items: center;
 }
 
-.name, .age, .job, .year, .emial {
+.name, .age, .job, .year, .emial, .psword{
     width: 105px;
 }
 
-.phone, .identity {
+.class-name, .phone {
     width: 150px;
+}
+
+.drop {
+    width: 80px;
 }
 
 .email {
     flex-grow: 1;
 }
 
-.list-header .phone, .list-header .age, .list-header .job, .list-header .year, .list-header .emial, .list-header .identity, .list-header .email {
+.list-header .phone, .list-header .age, .list-header .job, .list-header .year, .list-header .emial, .list-header .psword, .list-header .email, .list-header .class-name {
     border-left: 3px #333 solid;
-}
-
-
-.drop {
-    width: 80px;
 }
 
 .member-ul {
@@ -151,11 +114,11 @@ body {
     display: flex;
     box-sizing: border-box;
     width: 100%;
-    min-height: 60px;
+    min-height: 40px;
     border-radius: 10px;
     border: #c6c3c3 3px solid;
     padding: 0;
-    margin-top: 20px;
+    margin-top: 0px;
     margin-bottom: 10px;
     list-style-type: none;
     justify-content: space-evenly;
@@ -167,61 +130,38 @@ body {
     align-items: center;
 }
 
-.member-detail .phone, .member-detail .age, .member-detail .job, .member-detail .year, .member-detail .emial, .member-detail .identity, .member-detail .email {
+.member-detail .phone, .member-detail .age, .member-detail .job, .member-detail .year, .member-detail .emial, .member-detail .psword, .member-detail .email, .member-detail .class-name {
     border-left: 3px #33333300 solid;
 }
 
-button {
-    width: 70px;
-    height: 40px;
+.reset-button {
     border-radius: 5px;
     border: none;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 2px;
     padding-bottom: 2px;
-    font-size: 20px;
+    background-color: #e6f517ee;
+}
+
+.reset-button:hover {
     cursor: pointer;
+    background-color: #eff4b1ee;
 }
 
 .drop-button {
+    border-radius: 5px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     background-color: #f51717ee;
 }
 
 .drop-button:hover {
-    background-color: #f3838d;
-}
-
-.identity-button {
-    background-color: #f4ed0b;
-}
-
-.identity-button:hover {
-    background-color: #f9f7be;
-}
-
-.left-nav {
-    display: flex;
-    width: 100%;
-    height: 80px;
-    justify-content: center;
-    align-items: center;
-    background-color: #9f87d6;
-    border-bottom: #94bb8a 5px solid;
     cursor: pointer;
-}
-
-.left-nav:hover {
-    background-color: #c2b8d9;
-}
-
-.invite-user {
-    border-bottom: none;
-}
-
-form {
-    display: flex;
-    align-items: center;
+    background-color: #f3838d;
 }
 
 .nav-btn {

@@ -44,73 +44,13 @@ button {
 }
 
 .content {
-    display: flex;
     box-sizing: border-box;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    padding: 50px;
+    padding: 0px;
     width: 100%;
     height: 100%;
     background-color: #8ad23d;
-}
-
-.class-list {
-    display: flex;  
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-}
-
-.class-box {
-    display: inline-block;
-    border-radius: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 30px;
-    height: 150px;
-    width: 220px;
-    background-color: #76e5d6;
-    text-align: center;
-}
-
-.class_header {
-    display: flex;
-    padding-top: 10px;
-    height: 40px;
-}
-
-.class_header div {
-    display: flex;
-    box-sizing: border-box;
-    width: 50%;
-    align-items: center;
-    justify-content: center;
-}
-
-.mamber_amount {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.mamber_amount h4 {
-    padding: 0;
-    margin: 0;
-}
-
-.manage-btn {
-    border: none;
-    border-radius: 8px;
-    width: 150px;
-    height: 40px;
-    background-color: #48c2eb;
-}
-
-.manage-btn:hover {
-    background-color: #a5d4e3;
-    cursor: pointer;
 }
 
 .nav-btn {

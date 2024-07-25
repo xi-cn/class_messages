@@ -10,42 +10,55 @@
     <div class="container">
         <div class="header">
             <ul class="nav">
-                <li>班级管理</li>
-                <li>创建班级</li>
-                <li>搜索用户</li>
-                <li>用户管理</li>
+                <li>
+                    <form action="/to_admin_success">
+                        <button type="submit" class="nav-btn">
+                            班级管理
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_create_class">
+                        <button type="submit" class="nav-btn">
+                            创建班级
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_admin_user">
+                        <button type="submit" class="nav-btn">
+                            用户管理
+                        </button>
+                    </form>
+                </li>
             </ul>
         </div>
         <div class="content">
             <ul class="class-list">
+                {% for class_info in result %}
                 <li class="class-box">
-                    
                     <div class="class_detail">
                         <div class="class_header">
                             <div class="class_number">
-                                <h3>#1</h3>
+                                <h3># {{ class_info.class_id }}</h3>
                             </div>
                             <div class="class_name">
-                                <h3>班级名称</h3>
+                                <h3>{{ class_info.class_name }}</h3>
                             </div>
                         </div>
                         <div class="mamber_amount">
-                            <h4>班级人数: <strong>100</strong> </h4>
+                            <h4>班级人数: <strong>{{ class_info.member_num }}</strong> </h4>
                         </div>
                     </div>
                     <div class="class-manage">
-                        <button class="manage-btn">班级管理</button>
+                        <form action="/to_manage_class" method="post">
+                            <input type="hidden" name="class_id" value="{{ class_info.class_id }}">
+                            <input type="hidden" name="class_name" value="{{ class_info.class_name }}">
+                            <button type="submit" class="manage-btn">班级管理</button>
+                        </form>
                     </div>
                 </li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
-                <li class="class-box"></li>
+                {% endfor %}
             </ul>
         </div>
     </div>

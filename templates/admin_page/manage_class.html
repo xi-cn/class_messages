@@ -10,21 +10,48 @@
     <div class="container">
         <div class="header">
             <ul class="nav">
-                <li>班级管理</li>
-                <li>创建班级</li>
-                <li>搜索用户</li>
-                <li>用户管理</li>
+                <li>
+                    <form action="/to_admin_success">
+                        <button type="submit" class="nav-btn">
+                            班级管理
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_create_class">
+                        <button type="submit" class="nav-btn">
+                            创建班级
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_admin_user">
+                        <button type="submit" class="nav-btn">
+                            用户管理
+                        </button>
+                    </form>
+                </li>
             </ul>
         </div>
         <div class="content">
             <div class="class_header">
                 <img src="../../static/svg/back.svg" alt="BACK" height=20px>
                 <div class="class_name">
-                    <h4>班级名称</h4>
+                    <h4>{{ result.class_name }}</h4>
                 </div>
             </div>
             <div class="class_body">
-                <div class="left_area"></div>
+                <div class="left_area">
+                    <div class="left-nav modyfy-class">
+                        修改班名
+                    </div>
+                    <div class="left-nav dissolve-class">
+                        解散班级
+                    </div>
+                    <div class="left-nav invite-user">
+                        邀请用户
+                    </div>
+                </div>
                 <div class="right_area">
                     <div class="member_container">
                         <div class="list-nav">
@@ -41,35 +68,40 @@
                         </div>
                         <div class="content-container">
                             <ul class="member-ul">
+                                {% for user_info in result.user_info %}
                                 <div class="member-detail">
-                                    <li class="name">姓名</li>
-                                    <li class="email">邮箱</li>
-                                    <li class="phone">电话</li>
-                                    <li class="age">年龄</li>
-                                    <li class="job">工作</li>
-                                    <li class="year">入学年份</li>
-                                    <li class="identity">身份</li>
-                                    <li class="drop"></li>
+                                    <li class="name">{{ user_info.username }}</li>
+                                    <li class="email">{{ user_info.email }}</li>
+                                    <li class="phone">{{ user_info.phone }}</li>
+                                    <li class="age">{{ user_info.age }}</li>
+                                    <li class="job">{{ user_info.job }}</li>
+                                    <li class="year">{{ user_info.year }}</li>
+                                    <li class="identity">
+                                        <form action="/update_user_identity" method="post">
+                                            <input type="hidden" name="class_id" value="{{ result.class_id }}">
+                                            <input type="hidden" name="class_name" value="{{ result.name }}">
+                                            <input type="hidden" name="username" value="{{ user_info.username }}">
+                                            <input type="hidden" name="identity" value="{{ user_info.is_admin }}">
+                                            {% if user_info.is_admin == 0 %}
+                                            用户
+                                            <button type="submit" class="identity-button">提升</button>
+                                            {% endif %}
+                                            {% if user_info.is_admin == 1 %}
+                                            管理员
+                                            <button type="submit" class="identity-button">撤销</button>
+                                            {% endif %}
+                                        </form>
+                                    </li>
+                                    <li class="drop">
+                                        <form action="/remove_class_member" method="post">
+                                            <input type="hidden" name="class_id" value="{{ result.class_id }}">
+                                            <input type="hidden" name="class_name" value="{{ result.name }}">
+                                            <input type="hidden" name="username" value="{{ user_info.username }}">
+                                            <button type="submit" class="drop-button">移除</button>
+                                        </form>
+                                    </li>
                                 </div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
-                                <div class="member-detail"></div>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>

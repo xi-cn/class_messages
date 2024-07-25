@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../static/css/admin_pages/manage_user.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <ul class="nav">
+                <li>
+                    <form action="/to_admin_success">
+                        <button type="submit" class="nav-btn">
+                            班级管理
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_create_class">
+                        <button type="submit" class="nav-btn">
+                            创建班级
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form action="/to_admin_user">
+                        <button type="submit" class="nav-btn">
+                            用户管理
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="member_container">
+                <div class="list-nav">
+                    <ul class="list-header">
+                        <li class="name">姓名</li>
+                        <li class="email">邮箱</li>
+                        <li class="phone">电话</li>
+                        <li class="age">年龄</li>
+                        <li class="job">工作</li>
+                        <li class="year">入学年份</li>
+                        <li class="class-name">班级</li>
+                        <li class="psword">密码</li>
+                        <li class="drop"></li>
+                    </ul>
+                </div>
+                <div class="content-container">
+                    <ul class="member-ul">
+                        {% for user_info in result %}
+                        <div class="member-detail">
+                            <li class="name">{{ user_info.username }}</li>
+                            <li class="email">{{ user_info.email }}</li>
+                            <li class="phone">{{ user_info.phone }}</li>
+                            <li class="age">{{ user_info.age }}</li>
+                            <li class="job">{{ user_info.job }}</li>
+                            <li class="year">{{ user_info.year }}</li>
+                            <li class="class-name">{{ user_info.class_name }}
+                                <button type="button" class="reset-button">更改</button>
+                            </li>
+                            <li class="psword">
+                                <form action="/reset_user_password" method="post">
+                                    <input type="hidden" name="username" value="{{ user_info.username }}">
+                                    <button type="submit" class="reset-button">重置</button>
+                                </form>
+                            </li>
+                            <li class="drop">
+                                <form action="/distory_user" method="post">
+                                    <input type="hidden" name="username" value="{{ user_info.username }}">
+                                    <button type="submit" class="drop-button">注销</button>
+                                </form>
+                            </li>
+                        </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
