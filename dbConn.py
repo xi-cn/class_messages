@@ -398,7 +398,6 @@ def quitClass(username):
     set c_id = null, is_admin = false
     where username = '{username}'
     '''
-    print(sql)
     cursor.execute(sql)
     # conn.commit()
 
@@ -944,6 +943,93 @@ def create_class(class_name):
     '''
     cursor.execute(sql)
     return list(cursor)[0][0]
+
+# 修改班级名称
+def modifyClassName(class_id, class_name):
+    sql = f'''
+    update class_info
+    set c_name = '{class_name}'
+    where c_id = {class_id}
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 解散班级
+def dissolveClass(class_id):
+    # 先把用户班级设置成null
+    sql = f'''
+    update userInfo
+    set c_id = null
+    where c_id = {class_id}
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+    # 删除班级
+    sql = f'''
+    delete from class_info
+    where c_id = {class_id}
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 管理员搜索用户
+def adminSearchUser(username):
+    sql = f'''
+    select username, age
+    from userInfo
+    where username='{username}'
+    '''
+    cursor.execute(sql)
+    result = {'is_empty' : True}
+    res = list(cursor)
+    if (len(res) == 0):
+        return result
+    result['is_empty'] = False
+    result['username'] = res[0][0]
+    result['age'] = res[0][1]
+    return result
+
+# 管理员邀请用户
+def adminInviteUser(invitee, class_id):
+    sql = f'''
+    insert into invite_info (inviter, c_id, invitee, invite_time)
+    values
+        ("admin",{class_id}, '{invitee}', '{getTimeString()}')
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 管理员退出用户的班级
+def adminDropClass(username):
+    sql = f'''
+    update userInfo
+    set c_id = null, is_admin = 0
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 管理员修改用户班级
+def adminModifyClass(username, class_id):
+    sql = f'''
+    update userInfo
+    set c_id = {class_id}, is_admin = 0
+    where username = '{username}'
+    '''
+    cursor.execute(sql)
+    conn.commit()
+
+# 检查管理员登录
+def checkAdminLogin(psword):
+    sql = f'''
+    select psword
+    from userInfo
+    where username='admin'
+    '''
+    cursor.execute(sql)
+    res = list(cursor)[0][0]
+    return res == psword
 
 if __name__ == "__main__":
     data = checkClassInvitation('a')

@@ -63,9 +63,13 @@ def register():
 # 管理员登录
 @app.route('/admin_login', methods=['POST', 'GET'])
 def admin_login():
-    session['admin_login'] = True
-    result = dbConn.getAllClassInfo()
-    return render_template('admin_page/admin_success.html', result=result)
+    psword = request.form.get('password')
+    if dbConn.checkAdminLogin(psword):
+        session['admin_login'] = True
+        result = dbConn.getAllClassInfo()
+        return render_template('admin_page/admin_success.html', result=result)
+    else:
+        return render_template('admin_login.html', message='密码错误！')
 
 
 # 返回个人主页
@@ -507,6 +511,8 @@ def update_user_identity():
 # 管理员移除班级成员
 @app.route('/remove_class_member', methods=['POST', 'GET'])
 def remove_class_member():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
     if request.method == 'POST':
         username = request.form.get('username')
         class_id = request.form.get('class_id')
@@ -535,7 +541,9 @@ def to_admin_user():
     if session['admin_login'] == None:
         return render_template('main_page.html')
 
-    result = dbConn.getAllUserInfo()
+    user_info = dbConn.getAllUserInfo()
+    class_info = dbConn.getAllClassInfo()
+    result = {'user_info' : user_info, 'class_info' : class_info}
     return render_template('admin_page/manage_user.html',result=result)
 
 # 重置用户密码
@@ -587,9 +595,101 @@ def distory_user():
 # 创建班级
 @app.route('/create_class', methods = ['POST', 'GET'])
 def create_user():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
     class_name = request.json.get('class_name')
     class_id = dbConn.create_class(class_name)
     return jsonify({'class_id': class_id})
+
+# 修改班级名称
+@app.route('/modify_class_name', methods=['POST', 'GET'])
+def modify_class_name():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    if request.method == 'POST':
+        new_name = request.form.get('new_class_name')
+        class_id = request.form.get('class_id')
+    else:
+        new_name = request.args.get('new_class_name')
+        class_id = request.args.get('class_id')
+        
+    dbConn.modifyClassName(class_id, new_name)
+    result = dbConn.getAllClassUserInfo(class_id)
+    result['class_id'] = class_id
+    result['class_name'] = new_name
+    return render_template('admin_page/manage_class.html',result=result)
+
+# 解散班级
+@app.route('/dissolve_class', methods=['POST', 'GET'])
+def dissolve_class():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    if request.method == 'POST':
+        class_id = request.form.get('class_id')
+    else:
+        class_id = request.args.get('class_id')
+    dbConn.dissolveClass(class_id)
+    result = dbConn.getAllClassInfo()
+    return render_template('admin_page/admin_success.html', result=result)
+
+# 管理员搜索用户
+@app.route('/admin_search_user', methods=['POST', 'GET'])
+def admin_search_user():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    username = request.json.get('username')
+    result = dbConn.adminSearchUser(username)
+    return jsonify(result)
+
+# 管理员邀请用户
+@app.route('/admin_invite_user', methods = ['POST', 'GET'])
+def admin_invite_user():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    invitee = request.json.get('invitee')
+    class_id = request.json.get('class_id')
+    dbConn.adminInviteUser(invitee, class_id)
+    return jsonify({'status' : 'ok'})
+
+# 管理员退出用户
+@app.route('/admin_drop_user', methods=['POST', 'GET'])
+def admin_drop_user():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    if request.method == 'POST':
+        user = request.form.get('username')
+    else:
+        user = request.args.get('username')
+    
+    dbConn.adminDropClass(user)
+    user_info = dbConn.getAllUserInfo()
+    class_info = dbConn.getAllClassInfo()
+    result = {'user_info' : user_info, 'class_info' : class_info}
+    return render_template('admin_page/manage_user.html',result=result)
+
+# 管理员修改用户班级
+@app.route('/admin_modify_class', methods=['POST', 'GET'])
+def admin_modify_class():
+    if session['admin_login'] == None:
+        return render_template('main_page.html')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        class_id = request.form.get('class_id')
+    else:
+        username = request.args.get('username')
+        class_id = request.args.get('class_id')
+
+    dbConn.adminModifyClass(username, class_id)
+    user_info = dbConn.getAllUserInfo()
+    class_info = dbConn.getAllClassInfo()
+    result = {'user_info' : user_info, 'class_info' : class_info}
+    return render_template('admin_page/manage_user.html',result=result)
+
+# 管理员退出登录
+@app.route('/admin_exit', methods=['POST', 'GET'])
+def admin_exit():
+    session['admin_login'] = None
+    return render_template('main_page.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

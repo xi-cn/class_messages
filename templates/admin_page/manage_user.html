@@ -31,9 +31,38 @@
                         </button>
                     </form>
                 </li>
+                <li>
+                    <form action="/admin_exit">
+                        <button type="submit" class="nav-btn">
+                            退出登录
+                        </button>
+                    </form>
+                </li>
             </ul>
         </div>
         <div class="content">
+
+            <div class="pop-window">
+                <form action="/admin_drop_user" method="post">
+                    <input type="hidden" class="drop-input" name="username">
+                    <button type="submit" class="drop-class">退出</button>  
+                    <button type="button" class="cancel-class">取消</button>
+                </form>
+                <div class="class-lists">
+                {% for class_info in result.class_info %}
+                <div class="class-detail">  
+                    <p>{{class_info.class_id}}</p>
+                    <p>{{class_info.class_name}}</p>
+                    <form action="/admin_modify_class" method="post">
+                        <input type="hidden" class="modify-input" name="username">
+                        <input type="hidden" name="class_id" value="{{ class_info.class_id }}">
+                        <button type="submit" class="join-class">加入</button>
+                    </form>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+
             <div class="member_container">
                 <div class="list-nav">
                     <ul class="list-header">
@@ -50,7 +79,7 @@
                 </div>
                 <div class="content-container">
                     <ul class="member-ul">
-                        {% for user_info in result %}
+                        {% for user_info in result.user_info %}
                         <div class="member-detail">
                             <li class="name">{{ user_info.username }}</li>
                             <li class="email">{{ user_info.email }}</li>
@@ -59,7 +88,7 @@
                             <li class="job">{{ user_info.job }}</li>
                             <li class="year">{{ user_info.year }}</li>
                             <li class="class-name">{{ user_info.class_name }}
-                                <button type="button" class="reset-button">更改</button>
+                                <button type="button" class="modify-button" username="{{ user_info.username }}">更改</button>
                             </li>
                             <li class="psword">
                                 <form action="/reset_user_password" method="post">
@@ -80,5 +109,43 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // 更改按钮
+        modify_btns_list = document.querySelectorAll('.modify-button')
+        modify_btns_list.forEach(modify_button => {
+            modify_button.addEventListener('click', function() {
+                username = this.getAttribute('username')
+
+                drop_input = document.querySelector('.drop-input')
+                drop_input.value = username
+
+                modify_input = document.querySelectorAll('.modify-input')
+                for (i=0; i<modify_input.length; ++i){
+                    modify_input[i].value = username
+                }
+
+                pop_window = document.querySelector('.pop-window')
+                pop_window.setAttribute('username', username)
+                pop_window.style.display = "block"
+            })
+        });
+
+        // 取消按钮
+        cancel_btn = document.querySelector('.cancel-class')
+        cancel_btn.addEventListener('click', function() {
+            pop_window = document.querySelector('.pop-window')
+            pop_window.style.display = "none"
+        })
+
+        // 退出按钮
+        drop_btn = document.querySelector('.drop-class')
+        drop_btn.addEventListener('click', function() {
+            pop_window = document.querySelector('.pop-window')
+            username = pop_window.getAttribute('username')
+        })
+
+    </script>
+
 </body>
 </html>
